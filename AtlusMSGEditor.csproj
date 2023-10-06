@@ -75,7 +75,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\FTDStringConverter.cs" />
     <Compile Include="Classes\MainForm.Events.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -85,7 +84,6 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Classes\NameTBLEditor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="MainForm.resx">
@@ -100,69 +98,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="Dependencies\P5RCBT\DATMSGPAK\datAccessoryHelp.msg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Dependencies\P5RCBT\DATMSGPAK\datAddEffectHelp.msg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Dependencies\P5RCBT\DATMSGPAK\datArmorHelp.msg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Dependencies\P5RCBT\DATMSGPAK\datBatonTouchHelp.msg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Dependencies\P5RCBT\DATMSGPAK\datCustomPartsHelp.msg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Dependencies\P5RCBT\DATMSGPAK\datDressHelp.msg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Dependencies\P5RCBT\DATMSGPAK\datEventItemHelp.msg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Dependencies\P5RCBT\DATMSGPAK\datGunHelp.msg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Dependencies\P5RCBT\DATMSGPAK\datItem2Help.msg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Dependencies\P5RCBT\DATMSGPAK\datItemHelp.msg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Dependencies\P5RCBT\DATMSGPAK\datItemPackageHelp.msg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Dependencies\P5RCBT\DATMSGPAK\datMaterialHelp.msg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Dependencies\P5RCBT\DATMSGPAK\datMyth.msg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Dependencies\P5RCBT\DATMSGPAK\datQuestHelp.msg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Dependencies\P5RCBT\DATMSGPAK\datSkillCardHelp.msg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Dependencies\P5RCBT\DATMSGPAK\datSkillHelp.msg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Dependencies\P5RCBT\DATMSGPAK\datSpecificHelp.msg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Dependencies\P5RCBT\DATMSGPAK\datTechnicalHelp.msg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Dependencies\P5RCBT\DATMSGPAK\datWeapon2Help.msg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Dependencies\P5RCBT\DATMSGPAK\datWeaponHelp.msg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Dependencies\P5RCBT\TABLE\NAME.TBL">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -196,64 +131,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Dependencies\mogna.ico" />
-    <Content Include="Dependencies\P5RCBT\TABLE\NAME\Accessories.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dependencies\P5RCBT\TABLE\NAME\Arcanas.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dependencies\P5RCBT\TABLE\NAME\Battle Actions.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dependencies\P5RCBT\TABLE\NAME\Confidant Names.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dependencies\P5RCBT\TABLE\NAME\Consumables.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dependencies\P5RCBT\TABLE\NAME\Enemies.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dependencies\P5RCBT\TABLE\NAME\Key Items.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dependencies\P5RCBT\TABLE\NAME\Materials.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dependencies\P5RCBT\TABLE\NAME\Melee Weapons.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dependencies\P5RCBT\TABLE\NAME\Outfits.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dependencies\P5RCBT\TABLE\NAME\Party FirstNames.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dependencies\P5RCBT\TABLE\NAME\Party LastNames.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dependencies\P5RCBT\TABLE\NAME\Personas.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dependencies\P5RCBT\TABLE\NAME\Protectors.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dependencies\P5RCBT\TABLE\NAME\Ranged Weapons.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dependencies\P5RCBT\TABLE\NAME\Skill Cards.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dependencies\P5RCBT\TABLE\NAME\Skills Again.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dependencies\P5RCBT\TABLE\NAME\Skills.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Dependencies\P5RCBT\TABLE\NAME\Traits.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Icons.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

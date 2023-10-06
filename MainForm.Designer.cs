@@ -3,7 +3,7 @@ using MetroSet_UI.Forms;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace P5RStringEditor
+namespace AtlusMSGEditor
 {
     partial class MainForm : MetroSetForm
     {
@@ -52,17 +52,17 @@ namespace P5RStringEditor
             this.listBox_Msgs = new System.Windows.Forms.ListBox();
             this.panel_Editor = new System.Windows.Forms.Panel();
             this.tlp_Editor = new System.Windows.Forms.TableLayoutPanel();
-            this.txt_MsgTxt = new System.Windows.Forms.TextBox();
-            this.lbl_MsgTxt = new System.Windows.Forms.Label();
             this.lbl_MsgName = new System.Windows.Forms.Label();
             this.txt_MsgName = new System.Windows.Forms.TextBox();
+            this.lbl_MsgTxt = new System.Windows.Forms.Label();
+            this.txt_MsgTxt = new System.Windows.Forms.TextBox();
             this.chk_ShowOldMsgText = new MetroSet_UI.Controls.MetroSetCheckBox();
             this.splitContainer_Log = new System.Windows.Forms.SplitContainer();
-            this.rtb_Log = new System.Windows.Forms.RichTextBox();
-            this.splitContainer_Files = new System.Windows.Forms.SplitContainer();
-            this.listBox_Files = new System.Windows.Forms.ListBox();
             this.splitContainer_Directories = new System.Windows.Forms.SplitContainer();
             this.listBox_Directories = new System.Windows.Forms.ListBox();
+            this.splitContainer_Files = new System.Windows.Forms.SplitContainer();
+            this.listBox_Files = new System.Windows.Forms.ListBox();
+            this.rtb_Log = new System.Windows.Forms.RichTextBox();
             this.menuStrip_Main.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
@@ -75,14 +75,14 @@ namespace P5RStringEditor
             this.splitContainer_Log.Panel1.SuspendLayout();
             this.splitContainer_Log.Panel2.SuspendLayout();
             this.splitContainer_Log.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Files)).BeginInit();
-            this.splitContainer_Files.Panel1.SuspendLayout();
-            this.splitContainer_Files.Panel2.SuspendLayout();
-            this.splitContainer_Files.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Directories)).BeginInit();
             this.splitContainer_Directories.Panel1.SuspendLayout();
             this.splitContainer_Directories.Panel2.SuspendLayout();
             this.splitContainer_Directories.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Files)).BeginInit();
+            this.splitContainer_Files.Panel1.SuspendLayout();
+            this.splitContainer_Files.Panel2.SuspendLayout();
+            this.splitContainer_Files.SuspendLayout();
             this.SuspendLayout();
             // 
             // columnHeader
@@ -117,29 +117,28 @@ namespace P5RStringEditor
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.saveToolStripMenuItem.Text = "Save";
+            this.saveToolStripMenuItem.Text = "Save Project";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.Save_Click);
             // 
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
             this.loadToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.loadToolStripMenuItem.Text = "Load";
+            this.loadToolStripMenuItem.Text = "Load Project";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.Load_Click);
             // 
             // importToolStripMenuItem
             // 
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
             this.importToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.importToolStripMenuItem.Text = "Import";
-            this.importToolStripMenuItem.Click += new System.EventHandler(this.Import_Click);
+            this.importToolStripMenuItem.Text = "Import .BMDs";
+            this.importToolStripMenuItem.Click += new System.EventHandler(this.ImportBMDs_Click);
             // 
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
             this.exportToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.exportToolStripMenuItem.Text = "Export";
-            this.exportToolStripMenuItem.Click += new System.EventHandler(this.Export_Click);
+            this.exportToolStripMenuItem.Text = "Export .BMDs";
             // 
             // optionsToolStripMenuItem
             // 
@@ -171,6 +170,7 @@ namespace P5RStringEditor
             // 
             this.comboBox_Encoding.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Encoding.DropDownWidth = 150;
+            this.comboBox_Encoding.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.comboBox_Encoding.Items.AddRange(new object[] {
             "P5R_EFIGS",
             "P5R_JAPANESE",
@@ -270,27 +270,6 @@ namespace P5RStringEditor
             this.tlp_Editor.Size = new System.Drawing.Size(497, 464);
             this.tlp_Editor.TabIndex = 0;
             // 
-            // txt_MsgTxt
-            // 
-            this.txt_MsgTxt.Enabled = false;
-            this.txt_MsgTxt.Location = new System.Drawing.Point(127, 142);
-            this.txt_MsgTxt.Multiline = true;
-            this.txt_MsgTxt.Name = "txt_MsgTxt";
-            this.txt_MsgTxt.Size = new System.Drawing.Size(362, 179);
-            this.txt_MsgTxt.TabIndex = 9;
-            this.txt_MsgTxt.TextChanged += new System.EventHandler(this.Desc_Changed);
-            // 
-            // lbl_MsgTxt
-            // 
-            this.lbl_MsgTxt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lbl_MsgTxt.AutoSize = true;
-            this.lbl_MsgTxt.Location = new System.Drawing.Point(44, 139);
-            this.lbl_MsgTxt.Name = "lbl_MsgTxt";
-            this.lbl_MsgTxt.Size = new System.Drawing.Size(77, 40);
-            this.lbl_MsgTxt.TabIndex = 5;
-            this.lbl_MsgTxt.Text = "Message Text:";
-            this.lbl_MsgTxt.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // lbl_MsgName
             // 
             this.lbl_MsgName.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -310,7 +289,27 @@ namespace P5RStringEditor
             this.txt_MsgName.Name = "txt_MsgName";
             this.txt_MsgName.Size = new System.Drawing.Size(362, 26);
             this.txt_MsgName.TabIndex = 6;
-            this.txt_MsgName.TextChanged += new System.EventHandler(this.Name_Changed);
+            // 
+            // lbl_MsgTxt
+            // 
+            this.lbl_MsgTxt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lbl_MsgTxt.AutoSize = true;
+            this.lbl_MsgTxt.Location = new System.Drawing.Point(44, 139);
+            this.lbl_MsgTxt.Name = "lbl_MsgTxt";
+            this.lbl_MsgTxt.Size = new System.Drawing.Size(77, 40);
+            this.lbl_MsgTxt.TabIndex = 5;
+            this.lbl_MsgTxt.Text = "Message Text:";
+            this.lbl_MsgTxt.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // txt_MsgTxt
+            // 
+            this.txt_MsgTxt.Enabled = false;
+            this.txt_MsgTxt.Location = new System.Drawing.Point(127, 142);
+            this.txt_MsgTxt.Multiline = true;
+            this.txt_MsgTxt.Name = "txt_MsgTxt";
+            this.txt_MsgTxt.Size = new System.Drawing.Size(362, 179);
+            this.txt_MsgTxt.TabIndex = 9;
+            this.txt_MsgTxt.TextChanged += new System.EventHandler(this.Desc_Changed);
             // 
             // chk_ShowOldMsgText
             // 
@@ -353,15 +352,32 @@ namespace P5RStringEditor
             this.splitContainer_Log.SplitterDistance = 387;
             this.splitContainer_Log.TabIndex = 4;
             // 
-            // rtb_Log
+            // splitContainer_Directories
             // 
-            this.rtb_Log.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.rtb_Log.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtb_Log.Location = new System.Drawing.Point(0, 0);
-            this.rtb_Log.Name = "rtb_Log";
-            this.rtb_Log.Size = new System.Drawing.Size(890, 79);
-            this.rtb_Log.TabIndex = 0;
-            this.rtb_Log.Text = "";
+            this.splitContainer_Directories.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer_Directories.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer_Directories.Name = "splitContainer_Directories";
+            // 
+            // splitContainer_Directories.Panel1
+            // 
+            this.splitContainer_Directories.Panel1.Controls.Add(this.listBox_Directories);
+            // 
+            // splitContainer_Directories.Panel2
+            // 
+            this.splitContainer_Directories.Panel2.Controls.Add(this.splitContainer_Files);
+            this.splitContainer_Directories.Size = new System.Drawing.Size(890, 387);
+            this.splitContainer_Directories.SplitterDistance = 127;
+            this.splitContainer_Directories.TabIndex = 0;
+            // 
+            // listBox_Directories
+            // 
+            this.listBox_Directories.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.listBox_Directories.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listBox_Directories.ItemHeight = 20;
+            this.listBox_Directories.Location = new System.Drawing.Point(0, 0);
+            this.listBox_Directories.Name = "listBox_Directories";
+            this.listBox_Directories.Size = new System.Drawing.Size(127, 387);
+            this.listBox_Directories.TabIndex = 2;
             // 
             // splitContainer_Files
             // 
@@ -390,32 +406,16 @@ namespace P5RStringEditor
             this.listBox_Files.Size = new System.Drawing.Size(127, 387);
             this.listBox_Files.TabIndex = 1;
             // 
-            // splitContainer_Directories
+            // rtb_Log
             // 
-            this.splitContainer_Directories.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer_Directories.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer_Directories.Name = "splitContainer_Directories";
-            // 
-            // splitContainer_Directories.Panel1
-            // 
-            this.splitContainer_Directories.Panel1.Controls.Add(this.listBox_Directories);
-            // 
-            // splitContainer_Directories.Panel2
-            // 
-            this.splitContainer_Directories.Panel2.Controls.Add(this.splitContainer_Files);
-            this.splitContainer_Directories.Size = new System.Drawing.Size(890, 387);
-            this.splitContainer_Directories.SplitterDistance = 127;
-            this.splitContainer_Directories.TabIndex = 0;
-            // 
-            // listBox_Directories
-            // 
-            this.listBox_Directories.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.listBox_Directories.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listBox_Directories.ItemHeight = 20;
-            this.listBox_Directories.Location = new System.Drawing.Point(0, 0);
-            this.listBox_Directories.Name = "listBox_Directories";
-            this.listBox_Directories.Size = new System.Drawing.Size(127, 387);
-            this.listBox_Directories.TabIndex = 2;
+            this.rtb_Log.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.rtb_Log.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtb_Log.Location = new System.Drawing.Point(0, 0);
+            this.rtb_Log.Name = "rtb_Log";
+            this.rtb_Log.ReadOnly = true;
+            this.rtb_Log.Size = new System.Drawing.Size(890, 79);
+            this.rtb_Log.TabIndex = 0;
+            this.rtb_Log.Text = "";
             // 
             // MainForm
             // 
@@ -439,7 +439,7 @@ namespace P5RStringEditor
             this.ShowLeftRect = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.Style = MetroSet_UI.Enums.Style.Dark;
-            this.Text = "P5RStringEditor";
+            this.Text = "AtlusMSGEditor";
             this.TextColor = System.Drawing.Color.White;
             this.ThemeName = "MetroDark";
             this.menuStrip_Main.ResumeLayout(false);
@@ -458,14 +458,14 @@ namespace P5RStringEditor
             this.splitContainer_Log.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Log)).EndInit();
             this.splitContainer_Log.ResumeLayout(false);
-            this.splitContainer_Files.Panel1.ResumeLayout(false);
-            this.splitContainer_Files.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Files)).EndInit();
-            this.splitContainer_Files.ResumeLayout(false);
             this.splitContainer_Directories.Panel1.ResumeLayout(false);
             this.splitContainer_Directories.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Directories)).EndInit();
             this.splitContainer_Directories.ResumeLayout(false);
+            this.splitContainer_Files.Panel1.ResumeLayout(false);
+            this.splitContainer_Files.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Files)).EndInit();
+            this.splitContainer_Files.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 

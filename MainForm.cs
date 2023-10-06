@@ -22,11 +22,13 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 
-namespace P5RStringEditor
+namespace AtlusMSGEditor
 {
     public partial class MainForm : MetroSetForm
     {
         public Encoding userEncoding = AtlusEncoding.Persona5RoyalEFIGS;
+        public string dumpInputPath = "";
+        public string dumpOutPath = ".\\Dump";
 
         public MainForm()
         {
@@ -37,142 +39,7 @@ namespace P5RStringEditor
             SetLogging();
             MenuStripHelper.SetMenuStripIcons(MenuStripHelper.GetMenuStripIconPairs("Icons.txt"), this);
 
-            // Select first tab
-            SetListBoxDataSource_ToTBL();
-            tabControl_Files.SelectedIndex = -1;
-            tabControl_Files.SelectedIndex = 0;
-        }
-
-        private void ImportMSGData(string DatMsgPakDir, bool useChanges = false)
-        {
-            if (!Directory.Exists(DatMsgPakDir))
-                return;
-
-                if (File.Exists(bmdPath))
-                    DecompileBMD(bmdPath);
-
-                if (File.Exists(msgPath))
-                {
-                    using (FileSys.WaitForFile(msgPath)) { }
-
-                    string[] lines = File.ReadAllText(msgPath)
-                        .Replace("[s]", "").Replace("[n]", "\r\n").Replace("[e]", "")
-                        .Replace("[f 0 5 65278][f 2 1]", "")
-                        .Split('\n');
-
-                    for (int i = 0; i < lines.Length; i++)
-                    {
-                        if (lines[i].StartsWith("[msg "))
-                        {
-                            int itemId = GetItemIdFromFlowscriptLine(lines[i], msgPath.Contains("Help") && !msgPath.Contains("Specific"));
-
-
-                                string description = "";
-                                for (int x = i + 1; x < lines.Length; x++)
-                                {
-                                    if (lines[x].Contains("[msg "))
-                                    {
-                                        i = x - 1;
-                                        break;
-                                    }
-
-                                    description += lines[x] + "\n";
-                                }
-
-                                description = description.TrimEnd();
-                            
-                        }
-                    }
-                }
-            
-        }
-
-
-        private void DecompileBMD(string bmdPath)
-        {
-            string outPath = FileSys.GetExtensionlessPath(bmdPath) + ".msg";
-
-            AtlusScriptCompiler.Program.IsActionAssigned = false;
-            AtlusScriptCompiler.Program.InputFilePath = bmdPath;
-            AtlusScriptCompiler.Program.OutputFilePath = outPath;
-            AtlusScriptCompiler.Program.MessageScriptEncoding = userEncoding;
-            AtlusScriptCompiler.Program.MessageScriptTextEncodingName = userEncoding.EncodingName;
-            AtlusScriptCompiler.Program.Logger = new Logger($"{nameof(AtlusScriptCompiler)}_{Path.GetFileNameWithoutExtension(outPath)}");
-            AtlusScriptCompiler.Program.Listener = new FileAndConsoleLogListener(true, LogLevel.Info | LogLevel.Warning | LogLevel.Error | LogLevel.Fatal);
-
-            AtlusScriptCompiler.Program.Main(new string[] { bmdPath,
-                    "-Decompile", "-Library", "P5R", "-Encoding", comboBox_Encoding.SelectedItem.ToString(), "-Out", outPath });
-        }
-
-
-        private void CreateNewBMD(KeyValuePair<string, string> tblPair)
-        {
-            string tblName = tblPair.Key;
-            string datName = tblPair.Value;
-
-            // Get input/output paths
-            string bmdName = "dat" + datName;
-            if (datName != "Myth")
-                bmdName += "Help";
-
-            string inPath = Path.GetFullPath($".\\Dependencies\\P5RCBT\\DATMSGPAK\\{bmdName}.msg");
-            string outDir = Path.GetFullPath(".\\Output\\p5r.tblmod\\FEmulator\\PAK\\INIT\\DATMSG.PAK");
-            
-            Directory.CreateDirectory(outDir + "\\h");
-            Directory.Delete(outDir + "\\h"); // hack to create folder with extension in name
-            string outPath = Path.Combine(outDir, $"{bmdName}.bmd");
-
-            if (!File.Exists(inPath))
-                return;
-
-            List<string> newMsgLines = new List<string>();
-
-            // Create .msg file with form data's description text
-            for (int i = 0; i < tblSection.TblEntries.Count; i++)
-            {
-                if (bmdName.Contains("Help") && !bmdName.Contains("Specific"))
-                    newMsgLines.Add($"[msg item_{i.ToString("X3")}]");
-                else if (bmdName.Contains("Myth"))
-                    newMsgLines.Add($"[msg myth_{i.ToString("D3")}]");
-                else
-                    newMsgLines.Add($"[msg specific_{i.ToString("D3")}]");
-
-                string[] descLines = tblSection.TblEntries[i].Description.Split('\n');
-                foreach (var line in descLines)
-                    if (!string.IsNullOrEmpty(line) && !line.Equals("\r"))
-                        newMsgLines.Add(line.Replace("\r", "[n]"));
-
-                newMsgLines.Add("[e]");
-                
-            }
-
-            // Save new .msg to output folder
-            string msgPath = outPath.Replace(".bmd", ".msg");
-            File.WriteAllLines(msgPath, newMsgLines);
-
-            if (outputBMDToolStripMenuItem.Checked)
-            {
-                // HACK: Comment out mFileWriter lines in AtlusScriptCompiler/FileAndConsoleLogListener.cs
-                // to prevent file access errors, at expense of no log output
-
-                using (FileSys.WaitForFile(msgPath)) { }
-                AtlusScriptCompiler.Program.IsActionAssigned = false;
-                AtlusScriptCompiler.Program.InputFilePath = msgPath;
-                AtlusScriptCompiler.Program.OutputFilePath = outPath;
-                AtlusScriptCompiler.Program.MessageScriptEncoding = userEncoding;
-                AtlusScriptCompiler.Program.MessageScriptTextEncodingName = userEncoding.EncodingName;
-                AtlusScriptCompiler.Program.Logger = new Logger($"{nameof(AtlusScriptCompiler)}_{Path.GetFileNameWithoutExtension(outPath)}");
-                AtlusScriptCompiler.Program.Listener = new FileAndConsoleLogListener(true, LogLevel.Info | LogLevel.Warning | LogLevel.Error | LogLevel.Fatal);
-
-                AtlusScriptCompiler.Program.Main(new string[] { msgPath,
-                    "-Compile", "-Library", "P5R", "-Encoding", comboBox_Encoding.SelectedItem.ToString(), "-OutFormat", "V1BE", "-Out", outPath });
-
-                if (deleteOutputMSGToolStripMenuItem.Checked)
-                {
-                    using (FileSys.WaitForFile(msgPath)) { }
-                    File.Delete(msgPath);
-                }
-            }
+            comboBox_Encoding.SelectedIndex = 0;
         }
 
         List<Change> Changes = new List<Change>();
@@ -183,6 +50,97 @@ namespace P5RStringEditor
             public string MessageName { get; set; } = "";
             public string MessageText { get; set; } = "";
 
+        }
+
+        private void ImportBMDs_Click(object sender, EventArgs e)
+        {
+            string importDir = WinFormsDialogs.SelectFolder("Choose Extracted CPKs Directory");
+            if (Directory.Exists(importDir))
+            {
+                dumpInputPath = importDir;
+
+                Output.Log($"Dumping .BMDs from \"{dumpInputPath}\"...");
+                ImportBMDs(Directory.GetFiles(dumpInputPath, "*", SearchOption.AllDirectories));
+                Output.Log($"Done Dumping .BMDs to \"{dumpOutPath}\".");
+                Output.Log($"Combining .MSGs in \"{dumpOutPath}\"...");
+                CombineToTxt(dumpOutPath, ".msg");
+                Output.Log($"Done Combining .MSGs.");
+                Output.Log($"Combining .FLOWs in \"{dumpOutPath}\"...");
+                CombineToTxt(dumpOutPath, ".flow");
+                Output.Log($"Done Combining .FLOWs.");
+            }
+        }
+
+        private void CombineToTxt(string directory, string extension)
+        {
+            string txt = "";
+
+            foreach (var file in Directory.GetFiles(directory, $"*{extension}", SearchOption.AllDirectories))
+            {
+                txt += $"// {FileSys.GetExtensionlessPath(file)}\n";
+                txt += File.ReadAllText(file) + "\n";
+            }
+
+            File.WriteAllText(extension.Replace(".","") + "Dump.txt", txt);
+        }
+
+        private void CombineMSGs()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ImportBMDs(string[] importFiles)
+        {
+            foreach (var file in importFiles)
+            {
+                switch (Path.GetExtension(file).ToLower())
+                {
+                    case ".bmd":
+                    case ".bf":
+                        DumpScript(file);
+                        break;
+                    case ".pak":
+                    case ".pac":
+                        ProcessPAC(file);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        private void ProcessPAC(string pacFile)
+        {
+            //throw new NotImplementedException();
+        }
+
+        private void DumpScript(string bmdPath)
+        {
+            string extension = ".msg";
+            if (Path.GetExtension(bmdPath).ToLower() == ".bf")
+                extension = ".flow";
+
+            string outPath = bmdPath.Replace(dumpInputPath, dumpOutPath) + extension;
+            Directory.CreateDirectory(Path.GetDirectoryName(outPath));
+
+            InitializeScriptCompiler(bmdPath, outPath);
+
+            AtlusScriptCompiler.Program.Main(new string[] { 
+                bmdPath, "-Decompile", 
+                "-Library", "P5R", 
+                "-Encoding", comboBox_Encoding.SelectedItem.ToString(), 
+                "-Out", outPath });
+        }
+
+        private void InitializeScriptCompiler(string inputPath, string outputPath)
+        {
+            AtlusScriptCompiler.Program.IsActionAssigned = false;
+            AtlusScriptCompiler.Program.InputFilePath = inputPath;
+            AtlusScriptCompiler.Program.OutputFilePath = outputPath;
+            AtlusScriptCompiler.Program.MessageScriptEncoding = userEncoding;
+            AtlusScriptCompiler.Program.MessageScriptTextEncodingName = userEncoding.EncodingName;
+            AtlusScriptCompiler.Program.Logger = new Logger($"{nameof(AtlusScriptCompiler)}_{Path.GetFileNameWithoutExtension(outputPath)}");
+            AtlusScriptCompiler.Program.Listener = new FileAndConsoleLogListener(true, LogLevel.Info | LogLevel.Warning | LogLevel.Error | LogLevel.Fatal);
         }
     }
 }

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace P5RStringEditor.Properties
+namespace AtlusMSGEditor.Properties
 {
 
 
