@@ -45,6 +45,20 @@ namespace AtlusMSGEditor
             MessageBox.Show($"Loaded changes from:\n{filePaths.First()}", "Project Loaded");
         }
 
+        private void ExportTXTs_Click(object sender, EventArgs e)
+        {
+            if (Directory.Exists(dumpOutPath))
+            {
+                // Combine .MSG and .FLOW files into single .txt files
+                Output.Log($"Combining .MSGs in \"{dumpOutPath}\"...");
+                CombineToTxt(dumpOutPath, ".msg");
+                Output.Log($"Done Combining .MSGs.");
+                Output.Log($"Combining .FLOWs in \"{dumpOutPath}\"...");
+                CombineToTxt(dumpOutPath, ".flow");
+                Output.Log($"Done Combining .FLOWs.");
+            }
+        }
+
         private void Encoding_Changed(object sender, EventArgs e)
         {
             userEncoding = AtlusEncoding.GetByName(comboBox_Encoding.SelectedItem.ToString());

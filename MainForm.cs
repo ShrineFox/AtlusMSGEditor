@@ -28,8 +28,8 @@ namespace AtlusMSGEditor
             MenuStripHelper.SetMenuStripIcons(MenuStripHelper.GetMenuStripIconPairs("Icons.txt"), this);
 
             comboBox_Encoding.SelectedIndex = 0;
-            //MsgDirs = JsonConvert.DeserializeObject<List<MsgDir>>(File.ReadAllText("msgDirs.json"));
-            //SetDirectoryListBoxDataSource();
+            MsgDirs = JsonConvert.DeserializeObject<List<MsgDir>>(File.ReadAllText("msgDirs.json"));
+            SetDirectoryListBoxDataSource();
         }
 
         private List<Message> GetMessages(string msgPath)
@@ -117,28 +117,21 @@ namespace AtlusMSGEditor
             {
                 dumpInputPath = importDir;
 
-                // Delete existing Dump dir
-                if (!WinFormsDialogs.ShowMessageBox("Delete Dump folder?",
+                if (deleteExistingDumpDirToolStripMenuItem.Checked)
+                {
+                    if (!WinFormsDialogs.ShowMessageBox("Delete Dump folder?",
                     $"The existing \"{dumpOutPath}\" directory and its contents will be deleted." +
                     $"\nAre you sure you want to continue?", MessageBoxButtons.YesNo))
-                    return;
+                        return;
 
-                if (Directory.Exists(dumpOutPath))
-                    Directory.Delete(dumpOutPath, true);
+                    if (Directory.Exists(dumpOutPath))
+                        Directory.Delete(dumpOutPath, true);
+                }
+
                 // Use AtlusScriptCompiler to decompile BF to FLOW and BMD to MSG in Dump dir
                 Output.Log($"Dumping .BMDs from \"{dumpInputPath}\"...");
                 ImportBMDs(Directory.GetFiles(dumpInputPath, "*", SearchOption.AllDirectories));
                 Output.Log($"Done Dumping .BMDs to \"{dumpOutPath}\".");
-
-                // Combine .MSG and .FLOW files into single .txt files
-                /*
-                Output.Log($"Combining .MSGs in \"{dumpOutPath}\"...");
-                CombineToTxt(dumpOutPath, ".msg");
-                Output.Log($"Done Combining .MSGs.");
-                Output.Log($"Combining .FLOWs in \"{dumpOutPath}\"...");
-                CombineToTxt(dumpOutPath, ".flow");
-                Output.Log($"Done Combining .FLOWs.");
-                */
 
                 // Read MSG files from Dump dir to MsgDirs object
                 Output.Log($"Loading .BMD dump into memory from \"{dumpOutPath}\".");
@@ -197,10 +190,10 @@ namespace AtlusMSGEditor
                     case ".bf":
                         DumpScript(file);
                         break;
-                    case ".pak":
-                    case ".pac":
-                        ProcessPAC(file);
-                        break;
+                    //case ".pak":
+                    //case ".pac":
+                    //    ProcessPAC(file);
+                    //    break;
                     default:
                         break;
                 }
@@ -223,14 +216,18 @@ namespace AtlusMSGEditor
 
             InitializeScriptCompiler(bmdPath, outPath);
 
-            try
+            if (!File.Exists(outPath))
             {
-                AtlusScriptCompiler.Program.Main(new string[] {
+                try
+                {
+                    AtlusScriptCompiler.Program.Main(new string[] {
                 bmdPath, "-Decompile",
                 "-Library", "P5R",
                 "-Encoding", comboBox_Encoding.SelectedItem.ToString(),
                 "-Out", outPath });
-            } catch { File.AppendAllText("dumpErrors.txt", bmdPath + "\n"); }
+                }
+                catch { File.AppendAllText("dumpErrors.txt", bmdPath + "\n"); }
+            }
         }
 
         private void InitializeScriptCompiler(string inputPath, string outputPath)

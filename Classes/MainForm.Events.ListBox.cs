@@ -1,4 +1,5 @@
-﻿using MetroSet_UI.Forms;
+﻿using MetroSet_UI.Controls;
+using MetroSet_UI.Forms;
 using System;
 using System.IO;
 using System.Linq;
@@ -18,11 +19,11 @@ namespace AtlusMSGEditor
 
             listBox_Directories.DataSource = bs_ListBox_Dirs;
             listBox_Directories.DisplayMember = "Path";
-            listBox_Directories.ValueMember = "MsgFiles";
+            listBox_Directories.ValueMember = "Path";
             listBox_Directories.FormattingEnabled = true;
             listBox_Directories.Format += ListBoxDirs_Format;
 
-            listBox_Directories.SelectedIndex = 0;
+            //listBox_Directories.SelectedIndex = 0;
         }
 
         private void ListBox_Dirs_SelectedIndexChanged(object sender, EventArgs e)
@@ -32,16 +33,23 @@ namespace AtlusMSGEditor
 
         private void SetFilesListBoxDataSource()
         {
+            txt_MsgTxt.Enabled = false;
+
             var selectedMsgDir = (MsgDir)listBox_Directories.SelectedItem;
+            listBox_Files.DataSource = null;
+            listBox_Files.Items.Clear();
+
             bs_ListBox_Files.DataSource = selectedMsgDir.MsgFiles;
 
             listBox_Files.DataSource = bs_ListBox_Files;
             listBox_Files.DisplayMember = "Path";
-            listBox_Files.ValueMember = "Messages";
+            listBox_Files.ValueMember = "Path";
             listBox_Files.FormattingEnabled = true;
             listBox_Files.Format += ListBoxFiles_Format;
 
-            listBox_Files.SelectedIndex = 0;
+            //listBox_Files.SelectedIndex = 0;
+            if (!chk_ShowOldMsgText.Checked)
+                txt_MsgTxt.Enabled = true;
         }
 
         private void ListBox_Files_SelectedIndexChanged(object sender, EventArgs e)
@@ -52,6 +60,11 @@ namespace AtlusMSGEditor
         private void SetMsgsListBoxDataSource()
         {
             var selectedMsgFile = (MsgFile)listBox_Files.SelectedItem;
+            listBox_Msgs.DataSource = null;
+            listBox_Msgs.Items.Clear();
+            if (selectedMsgFile == null)
+                return;
+
             bs_ListBox_Msgs.DataSource = selectedMsgFile.Messages;
 
             listBox_Msgs.DataSource = bs_ListBox_Msgs;
@@ -68,6 +81,9 @@ namespace AtlusMSGEditor
 
         private void SetFormFields()
         {
+            if (listBox_Msgs.SelectedItem == null)
+                return;
+
             var msg = (Message)listBox_Msgs.SelectedItem;
 
             txt_MsgName.Text = msg.Name;
@@ -93,7 +109,9 @@ namespace AtlusMSGEditor
             var msgFile = (MsgFile)e.ListItem;
 
             if (Changes.Any(x => x.Path == msgFile.Path))
-                e.Value = $" * {msgFile.Path}";
+                e.Value = $" * {Path.GetFileNameWithoutExtension(msgFile.Path)}";
+            else
+                e.Value = Path.GetFileNameWithoutExtension(msgFile.Path);
         }
 
         private void ListBoxDirs_Format(object sender, ListControlConvertEventArgs e)
@@ -126,14 +144,14 @@ namespace AtlusMSGEditor
 
         private void ShowOldMsg_CheckedChanged(object sender)
         {
-            var chkBox = (CheckBox)sender;
+            var chkBox = (MetroSetCheckBox)sender;
 
             SetFormFields();
 
             if (chkBox.Checked)
-                txt_MsgTxt.Enabled = true;
-            else
                 txt_MsgTxt.Enabled = false;
+            else
+                txt_MsgTxt.Enabled = true;
         }
 
         private void Search_KeyDown(object sender, KeyEventArgs e)

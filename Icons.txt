@@ -5,3 +5,4 @@ importToolStripMenuItem package_green
 exportToolStripMenuItem package_go
 toggleThemeToolStripMenuItem weather_cloudy
 optionsToolStripMenuItem cog
+exportTXTsToolStripMenuItem report
