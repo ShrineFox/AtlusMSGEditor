@@ -116,28 +116,28 @@ namespace AtlusMSGEditor
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(183, 26);
             this.saveToolStripMenuItem.Text = "Save Project";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.Save_Click);
             // 
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(183, 26);
             this.loadToolStripMenuItem.Text = "Load Project";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.Load_Click);
             // 
             // importToolStripMenuItem
             // 
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(183, 26);
             this.importToolStripMenuItem.Text = "Import .BMDs";
             this.importToolStripMenuItem.Click += new System.EventHandler(this.ImportBMDs_Click);
             // 
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(183, 26);
             this.exportToolStripMenuItem.Text = "Export .BMDs";
             // 
             // optionsToolStripMenuItem
@@ -170,7 +170,6 @@ namespace AtlusMSGEditor
             // 
             this.comboBox_Encoding.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Encoding.DropDownWidth = 150;
-            this.comboBox_Encoding.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.comboBox_Encoding.Items.AddRange(new object[] {
             "P5R_EFIGS",
             "P5R_JAPANESE",
@@ -199,7 +198,7 @@ namespace AtlusMSGEditor
             // splitContainer_Main.Panel2
             // 
             this.splitContainer_Main.Panel2.Controls.Add(this.panel_Editor);
-            this.splitContainer_Main.Size = new System.Drawing.Size(628, 387);
+            this.splitContainer_Main.Size = new System.Drawing.Size(628, 385);
             this.splitContainer_Main.SplitterDistance = 127;
             this.splitContainer_Main.TabIndex = 3;
             // 
@@ -216,7 +215,7 @@ namespace AtlusMSGEditor
             this.tlp_ListAndSearch.RowCount = 2;
             this.tlp_ListAndSearch.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8F));
             this.tlp_ListAndSearch.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 92F));
-            this.tlp_ListAndSearch.Size = new System.Drawing.Size(127, 387);
+            this.tlp_ListAndSearch.Size = new System.Drawing.Size(127, 385);
             this.tlp_ListAndSearch.TabIndex = 1;
             // 
             // txt_Search
@@ -235,8 +234,9 @@ namespace AtlusMSGEditor
             this.listBox_Msgs.ItemHeight = 20;
             this.listBox_Msgs.Location = new System.Drawing.Point(3, 33);
             this.listBox_Msgs.Name = "listBox_Msgs";
-            this.listBox_Msgs.Size = new System.Drawing.Size(121, 351);
+            this.listBox_Msgs.Size = new System.Drawing.Size(121, 349);
             this.listBox_Msgs.TabIndex = 0;
+            this.listBox_Msgs.SelectedIndexChanged += new System.EventHandler(this.ListBox_Msgs_SelectedIndexChanged);
             // 
             // panel_Editor
             // 
@@ -246,7 +246,7 @@ namespace AtlusMSGEditor
             this.panel_Editor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel_Editor.Location = new System.Drawing.Point(0, 0);
             this.panel_Editor.Name = "panel_Editor";
-            this.panel_Editor.Size = new System.Drawing.Size(497, 387);
+            this.panel_Editor.Size = new System.Drawing.Size(497, 385);
             this.panel_Editor.TabIndex = 0;
             // 
             // tlp_Editor
@@ -287,6 +287,7 @@ namespace AtlusMSGEditor
             this.txt_MsgName.Enabled = false;
             this.txt_MsgName.Location = new System.Drawing.Point(127, 56);
             this.txt_MsgName.Name = "txt_MsgName";
+            this.txt_MsgName.ReadOnly = true;
             this.txt_MsgName.Size = new System.Drawing.Size(362, 26);
             this.txt_MsgName.TabIndex = 6;
             // 
@@ -333,6 +334,7 @@ namespace AtlusMSGEditor
             this.chk_ShowOldMsgText.Text = "Show Old Message Text";
             this.chk_ShowOldMsgText.ThemeAuthor = "Narwin";
             this.chk_ShowOldMsgText.ThemeName = "MetroLite";
+            this.chk_ShowOldMsgText.CheckedChanged += new MetroSet_UI.Controls.MetroSetCheckBox.CheckedChangedEventHandler(this.ShowOldMsg_CheckedChanged);
             // 
             // splitContainer_Log
             // 
@@ -349,7 +351,7 @@ namespace AtlusMSGEditor
             // 
             this.splitContainer_Log.Panel2.Controls.Add(this.rtb_Log);
             this.splitContainer_Log.Size = new System.Drawing.Size(890, 470);
-            this.splitContainer_Log.SplitterDistance = 387;
+            this.splitContainer_Log.SplitterDistance = 385;
             this.splitContainer_Log.TabIndex = 4;
             // 
             // splitContainer_Directories
@@ -365,7 +367,7 @@ namespace AtlusMSGEditor
             // splitContainer_Directories.Panel2
             // 
             this.splitContainer_Directories.Panel2.Controls.Add(this.splitContainer_Files);
-            this.splitContainer_Directories.Size = new System.Drawing.Size(890, 387);
+            this.splitContainer_Directories.Size = new System.Drawing.Size(890, 385);
             this.splitContainer_Directories.SplitterDistance = 127;
             this.splitContainer_Directories.TabIndex = 0;
             // 
@@ -376,8 +378,9 @@ namespace AtlusMSGEditor
             this.listBox_Directories.ItemHeight = 20;
             this.listBox_Directories.Location = new System.Drawing.Point(0, 0);
             this.listBox_Directories.Name = "listBox_Directories";
-            this.listBox_Directories.Size = new System.Drawing.Size(127, 387);
+            this.listBox_Directories.Size = new System.Drawing.Size(127, 385);
             this.listBox_Directories.TabIndex = 2;
+            this.listBox_Directories.SelectedIndexChanged += new System.EventHandler(this.ListBox_Dirs_SelectedIndexChanged);
             // 
             // splitContainer_Files
             // 
@@ -392,7 +395,7 @@ namespace AtlusMSGEditor
             // splitContainer_Files.Panel2
             // 
             this.splitContainer_Files.Panel2.Controls.Add(this.splitContainer_Main);
-            this.splitContainer_Files.Size = new System.Drawing.Size(759, 387);
+            this.splitContainer_Files.Size = new System.Drawing.Size(759, 385);
             this.splitContainer_Files.SplitterDistance = 127;
             this.splitContainer_Files.TabIndex = 5;
             // 
@@ -403,8 +406,9 @@ namespace AtlusMSGEditor
             this.listBox_Files.ItemHeight = 20;
             this.listBox_Files.Location = new System.Drawing.Point(0, 0);
             this.listBox_Files.Name = "listBox_Files";
-            this.listBox_Files.Size = new System.Drawing.Size(127, 387);
+            this.listBox_Files.Size = new System.Drawing.Size(127, 385);
             this.listBox_Files.TabIndex = 1;
+            this.listBox_Files.SelectedIndexChanged += new System.EventHandler(this.ListBox_Files_SelectedIndexChanged);
             // 
             // rtb_Log
             // 
@@ -413,7 +417,7 @@ namespace AtlusMSGEditor
             this.rtb_Log.Location = new System.Drawing.Point(0, 0);
             this.rtb_Log.Name = "rtb_Log";
             this.rtb_Log.ReadOnly = true;
-            this.rtb_Log.Size = new System.Drawing.Size(890, 79);
+            this.rtb_Log.Size = new System.Drawing.Size(890, 81);
             this.rtb_Log.TabIndex = 0;
             this.rtb_Log.Text = "";
             // 
