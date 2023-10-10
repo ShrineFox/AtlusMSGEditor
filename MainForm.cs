@@ -13,6 +13,7 @@ using AtlusFileSystemLibrary;
 using AtlusFileSystemLibrary.Common.IO;
 using AtlusFileSystemLibrary.FileSystems.PAK;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 
 namespace AtlusMSGEditor
 {
@@ -167,7 +168,8 @@ namespace AtlusMSGEditor
                         UsedByBf = File.Exists(FileSys.GetExtensionlessPath(file) + ".bf")
                     });
 
-                MsgDirs.Add(msgDir);
+                if (msgDir.MsgFiles.Count > 0)
+                    MsgDirs.Add(msgDir);
             }
 
             string jsonText = JsonConvert.SerializeObject(MsgDirs, Newtonsoft.Json.Formatting.Indented);
