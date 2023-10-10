@@ -90,8 +90,8 @@ namespace AtlusMSGEditor
             txt_MsgTxt.Text = msg.Text;
 
             var msgFile = (MsgFile)listBox_Files.SelectedItem;
-            if (!chk_ShowOldMsgText.Checked && Changes.Any(x => x.Path == msgFile.Path && x.MsgName == msg.Name))
-                txt_MsgTxt.Text = Changes.First(x => x.Path == msgFile.Path && x.MsgName == msg.Name).MsgText;
+            if (!chk_ShowOldMsgText.Checked && UserSettings.Changes.Any(x => x.Path == msgFile.Path && x.MsgName == msg.Name))
+                txt_MsgTxt.Text = UserSettings.Changes.First(x => x.Path == msgFile.Path && x.MsgName == msg.Name).MsgText;
         }
 
         private void ListBoxMsgs_Format(object sender, ListControlConvertEventArgs e)
@@ -99,7 +99,7 @@ namespace AtlusMSGEditor
             var msgFile = (MsgFile)listBox_Files.SelectedItem;
             var msg = (Message)e.ListItem;
 
-            if (Changes.Any(x => x.Path == msgFile.Path
+            if (UserSettings.Changes.Any(x => x.Path == msgFile.Path
                 && x.MsgName == msg.Name))
                 e.Value = $" * {msg.Name}";
         }
@@ -108,7 +108,7 @@ namespace AtlusMSGEditor
         {
             var msgFile = (MsgFile)e.ListItem;
 
-            if (Changes.Any(x => x.Path == msgFile.Path))
+            if (UserSettings.Changes.Any(x => x.Path == msgFile.Path))
                 e.Value = $" * {Path.GetFileNameWithoutExtension(msgFile.Path)}";
             else
                 e.Value = Path.GetFileNameWithoutExtension(msgFile.Path);
@@ -118,7 +118,7 @@ namespace AtlusMSGEditor
         {
             var msgDir = (MsgDir)e.ListItem;
 
-            if (Changes.Any(x => Path.GetDirectoryName(x.Path) == msgDir.Path))
+            if (UserSettings.Changes.Any(x => Path.GetDirectoryName(x.Path) == msgDir.Path))
                 e.Value = $" * {msgDir.Path}";
         }
 
@@ -130,12 +130,12 @@ namespace AtlusMSGEditor
             var msgFile = (MsgFile)listBox_Files.SelectedItem;
             var msg = (Message)listBox_Msgs.SelectedItem;
 
-            if (Changes.Any(x => x.Path == msgFile.Path
+            if (UserSettings.Changes.Any(x => x.Path == msgFile.Path
                 && x.MsgName == msg.Name))
-                Changes.First(x => x.Path == msgFile.Path
+                UserSettings.Changes.First(x => x.Path == msgFile.Path
                     && x.MsgName == msg.Name).MsgText = txt_MsgTxt.Text;
             else
-                Changes.Add(new Change() { 
+                UserSettings.Changes.Add(new Change() { 
                     Path = Path.GetDirectoryName(msgFile.Path), 
                     MsgName = txt_MsgName.Text, 
                     MsgText = txt_MsgTxt.Text 

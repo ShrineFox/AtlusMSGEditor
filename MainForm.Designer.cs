@@ -147,7 +147,7 @@ namespace AtlusMSGEditor
             // 
             this.exportTXTsToolStripMenuItem.Name = "exportTXTsToolStripMenuItem";
             this.exportTXTsToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.exportTXTsToolStripMenuItem.Text = "Export .TXTs";
+            this.exportTXTsToolStripMenuItem.Text = "Create .TXT Dump";
             this.exportTXTsToolStripMenuItem.Click += new System.EventHandler(this.ExportTXTs_Click);
             // 
             // optionsToolStripMenuItem

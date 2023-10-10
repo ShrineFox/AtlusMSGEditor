@@ -25,7 +25,7 @@ namespace AtlusMSGEditor
                 outPath += ".json";
 
             // Remove default values from serialized objects
-            string jsonText = JsonConvert.SerializeObject(Changes, Newtonsoft.Json.Formatting.Indented);
+            string jsonText = JsonConvert.SerializeObject(UserSettings, Newtonsoft.Json.Formatting.Indented);
 
             // Save to .json file
             File.WriteAllText(outPath, jsonText);
@@ -38,7 +38,7 @@ namespace AtlusMSGEditor
             if (filePaths == null || filePaths.Count == 0 || string.IsNullOrEmpty(filePaths.First()))
                 return;
 
-            Changes = JsonConvert.DeserializeObject<List<Change>>(File.ReadAllText(filePaths.First()));
+            UserSettings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(filePaths.First()));
 
             SetDirectoryListBoxDataSource();
 
