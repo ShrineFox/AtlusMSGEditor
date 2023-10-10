@@ -98,6 +98,7 @@ namespace AtlusMSGEditor
             public string Path { get; set; } = "";
             public string MsgName { get; set; } = "";
             public string MsgText { get; set; } = "";
+            public string Speaker { get; set; } = "";
         }
 
         public class MsgDir

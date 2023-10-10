@@ -87,11 +87,22 @@ namespace AtlusMSGEditor
             var msg = (Message)listBox_Msgs.SelectedItem;
 
             txt_MsgName.Text = msg.Name;
+            txt_Speaker.Text = msg.Speaker;
             txt_MsgTxt.Text = msg.Text;
+
+            if (msg.IsSelection)
+                comboBox_MsgType.SelectedIndex = 1;
+            else
+                comboBox_MsgType.SelectedIndex = 0;
 
             var msgFile = (MsgFile)listBox_Files.SelectedItem;
             if (!chk_ShowOldMsgText.Checked && UserSettings.Changes.Any(x => x.Path == msgFile.Path && x.MsgName == msg.Name))
-                txt_MsgTxt.Text = UserSettings.Changes.First(x => x.Path == msgFile.Path && x.MsgName == msg.Name).MsgText;
+            {
+                var change = UserSettings.Changes.First(x => x.Path == msgFile.Path && x.MsgName == msg.Name);
+                txt_MsgTxt.Text = change.MsgText;
+                txt_Speaker.Text = change.Speaker;
+            }
+                
         }
 
         private void ListBoxMsgs_Format(object sender, ListControlConvertEventArgs e)
@@ -119,7 +130,9 @@ namespace AtlusMSGEditor
             var msgDir = (MsgDir)e.ListItem;
 
             if (UserSettings.Changes.Any(x => Path.GetDirectoryName(x.Path) == msgDir.Path))
-                e.Value = $" * {msgDir.Path}";
+                e.Value = $" * {msgDir.Path.Replace(dumpOutPath + "\\", "")}";
+            else
+                e.Value = msgDir.Path.Replace(dumpOutPath + "\\", "");
         }
 
         private void Desc_Changed(object sender, EventArgs e)
@@ -132,13 +145,18 @@ namespace AtlusMSGEditor
 
             if (UserSettings.Changes.Any(x => x.Path == msgFile.Path
                 && x.MsgName == msg.Name))
-                UserSettings.Changes.First(x => x.Path == msgFile.Path
-                    && x.MsgName == msg.Name).MsgText = txt_MsgTxt.Text;
+            {
+                var change = UserSettings.Changes.First(x => x.Path == msgFile.Path
+                    && x.MsgName == msg.Name);
+                change.MsgText = txt_MsgTxt.Text;
+                change.Speaker = txt_Speaker.Text;
+            }
             else
                 UserSettings.Changes.Add(new Change() { 
                     Path = Path.GetDirectoryName(msgFile.Path), 
-                    MsgName = txt_MsgName.Text, 
-                    MsgText = txt_MsgTxt.Text 
+                    MsgName = txt_MsgName.Text,
+                    MsgText = txt_MsgTxt.Text,
+                    Speaker = txt_Speaker.Text
                 });
         }
 
