@@ -6,3 +6,4 @@ exportToolStripMenuItem package_go
 toggleThemeToolStripMenuItem weather_cloudy
 optionsToolStripMenuItem cog
 exportTXTsToolStripMenuItem report
+autoReplaceToolStripMenuItem text_replace

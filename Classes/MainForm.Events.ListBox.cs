@@ -1,9 +1,11 @@
-﻿using MetroSet_UI.Controls;
+﻿using AtlusFileSystemLibrary.FileSystems.APAK;
+using MetroSet_UI.Controls;
 using MetroSet_UI.Forms;
 using System;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using static AtlusMSGEditor.MainForm;
 
 namespace AtlusMSGEditor
 {
@@ -161,7 +163,7 @@ namespace AtlusMSGEditor
             {
                 msg.Change = new Change()
                 {
-                    Path = Path.GetDirectoryName(msgFile.Path),
+                    Path = msgFile.Path,
                     MsgName = txt_MsgName.Text,
                     MsgText = txt_MsgTxt.Text,
                     Speaker = txt_Speaker.Text
@@ -190,7 +192,117 @@ namespace AtlusMSGEditor
 
         private void Search_KeyDown(object sender, KeyEventArgs e)
         {
-            
+            if (string.IsNullOrEmpty(txt_Search.Text))
+                return;
+
+            if (e.KeyData == Keys.Enter)
+            {
+                // stop windows ding noise
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+
+                if (chk_IncludeDirsInSearch.Checked)
+                    SearchDirectories();
+                else if (chk_IncludeFilesInSearch.Checked)
+                    SearchFiles();
+                else
+                    SearchMessages();
+            }
+        }
+
+        private void SearchDirectories()
+        {
+            string searchTxt = txt_Search.Text.ToLower();
+            int selectedIndex = listBox_Directories.SelectedIndex;
+
+            int i = selectedIndex + 1;
+            while (i < listBox_Directories.Items.Count)
+            {
+                if (i == selectedIndex)
+                    return;
+
+                var dir = (MsgDir)listBox_Directories.Items[i];
+
+                if (dir.MsgFiles.Any(x => x.Messages.Any(y =>
+                    y.Name.ToLower().Contains(searchTxt) ||
+                    y.Text.ToLower().Contains(searchTxt) || y.Speaker.ToLower().Contains(searchTxt) ||
+                    (y.Change != null && y.Change.MsgText.ToLower().Contains(searchTxt)) ||
+                    (y.Change != null && y.Change.Speaker.ToLower().Contains(searchTxt))
+                    )))
+                {
+                    listBox_Directories.SelectedIndex = i;
+                    SearchFiles();
+                    return;
+                }
+
+                if (i == listBox_Directories.Items.Count - 1)
+                    i = 0;
+                else
+                    i++;
+            }
+        }
+
+        private void SearchFiles()
+        {
+            string searchTxt = txt_Search.Text.ToLower();
+            int selectedIndex = listBox_Files.SelectedIndex;
+
+            int i = selectedIndex + 1;
+            while (i < listBox_Files.Items.Count)
+            {
+                if (i == selectedIndex)
+                    return;
+
+                var file = (MsgFile)listBox_Files.Items[i];
+
+                if (file.Messages.Any(y =>
+                    y.Name.ToLower().Contains(searchTxt) ||
+                    y.Text.ToLower().Contains(searchTxt) || y.Speaker.ToLower().Contains(searchTxt) ||
+                    (y.Change != null && y.Change.MsgText.ToLower().Contains(searchTxt)) ||
+                    (y.Change != null && y.Change.Speaker.ToLower().Contains(searchTxt))
+                    ))
+                {
+                    listBox_Files.SelectedIndex = i;
+                    SearchMessages();
+                    return;
+                }
+
+                if (i == listBox_Files.Items.Count - 1)
+                    i = 0;
+                else
+                    i++;
+            }
+        }
+
+        private void SearchMessages()
+        {
+            string searchTxt = txt_Search.Text.ToLower();
+            int selectedIndex = listBox_Msgs.SelectedIndex;
+
+            int i = selectedIndex + 1;
+            while (i < listBox_Msgs.Items.Count)
+            {
+                if (i == selectedIndex)
+                    return;
+
+                var msg = (Message)listBox_Msgs.Items[i];
+
+                if (
+                    msg.Name.ToLower().Contains(searchTxt) ||
+                    msg.Text.ToLower().Contains(searchTxt) || msg.Speaker.ToLower().Contains(searchTxt) ||
+                    (msg.Change != null && msg.Change.MsgText.ToLower().Contains(searchTxt)) || 
+                    (msg.Change != null &&  msg.Change.Speaker.ToLower().Contains(searchTxt))
+                    )
+                {
+                    listBox_Msgs.SelectedIndex = i;
+                    return;
+                }
+
+                if (i == listBox_Msgs.Items.Count - 1)
+                    i = 0;
+                else
+                    i++;
+            }
         }
 
         private void ListBox_KeyDown(object sender, KeyEventArgs e)

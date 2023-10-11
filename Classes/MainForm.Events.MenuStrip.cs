@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using static AtlusMSGEditor.MainForm;
 
 namespace AtlusMSGEditor
 {
@@ -24,6 +25,15 @@ namespace AtlusMSGEditor
             if (!outPath.ToLower().EndsWith(".json"))
                 outPath += ".json";
 
+            // Update list of changes in usersettings object with form data
+            List<Change> Changes = new List<Change>();
+            foreach (var dir in MsgDirs)
+                foreach (var file in dir.MsgFiles)
+                    foreach (var msg in file.Messages)
+                        if (msg.Change != null)
+                            Changes.Add(msg.Change);
+            UserSettings.Changes = Changes;
+
             // Remove default values from serialized objects
             string jsonText = JsonConvert.SerializeObject(UserSettings, Newtonsoft.Json.Formatting.Indented);
 
@@ -39,6 +49,13 @@ namespace AtlusMSGEditor
                 return;
 
             UserSettings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(filePaths.First()));
+
+            // Update form data with list of changes in usersettings object
+            foreach (var dir in MsgDirs)
+                foreach (var file in dir.MsgFiles)
+                    foreach (var msg in file.Messages)
+                        if (UserSettings.Changes.Any(x => x.Path == file.Path && x.MsgName == msg.Name))
+                            msg.Change = UserSettings.Changes.First(x => x.Path == file.Path && x.MsgName == msg.Name);
 
             SetDirectoryListBoxDataSource();
 

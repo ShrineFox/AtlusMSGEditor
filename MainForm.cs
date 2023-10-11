@@ -13,7 +13,6 @@ using AtlusFileSystemLibrary;
 using AtlusFileSystemLibrary.Common.IO;
 using AtlusFileSystemLibrary.FileSystems.PAK;
 using System.Linq;
-using System.Runtime.Remoting.Contexts;
 
 namespace AtlusMSGEditor
 {
