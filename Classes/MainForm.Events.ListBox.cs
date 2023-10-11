@@ -86,6 +86,9 @@ namespace AtlusMSGEditor
 
             var msg = (Message)listBox_Msgs.SelectedItem;
 
+            txt_MsgName.Enabled = false;
+            txt_Speaker.Enabled = false;
+
             txt_MsgName.Text = msg.Name;
             txt_Speaker.Text = msg.Speaker;
             txt_MsgTxt.Text = msg.Text;
@@ -95,23 +98,23 @@ namespace AtlusMSGEditor
             else
                 comboBox_MsgType.SelectedIndex = 0;
 
-            var msgFile = (MsgFile)listBox_Files.SelectedItem;
-            if (!chk_ShowOldMsgText.Checked && UserSettings.Changes.Any(x => x.Path == msgFile.Path && x.MsgName == msg.Name))
+            if (!chk_ShowOldMsgText.Checked)
             {
-                var change = UserSettings.Changes.First(x => x.Path == msgFile.Path && x.MsgName == msg.Name);
-                txt_MsgTxt.Text = change.MsgText;
-                txt_Speaker.Text = change.Speaker;
+                if (msg.Change != null)
+                {
+                    txt_MsgTxt.Text = msg.Change.MsgText;
+                    txt_Speaker.Text = msg.Change.Speaker;
+                }
+                txt_MsgName.Enabled = true;
+                txt_Speaker.Enabled = true;
             }
-                
         }
 
         private void ListBoxMsgs_Format(object sender, ListControlConvertEventArgs e)
         {
-            var msgFile = (MsgFile)listBox_Files.SelectedItem;
             var msg = (Message)e.ListItem;
 
-            if (UserSettings.Changes.Any(x => x.Path == msgFile.Path
-                && x.MsgName == msg.Name))
+            if (msg.Change != null)
                 e.Value = $" * {msg.Name}";
         }
 
@@ -119,7 +122,7 @@ namespace AtlusMSGEditor
         {
             var msgFile = (MsgFile)e.ListItem;
 
-            if (UserSettings.Changes.Any(x => x.Path == msgFile.Path))
+            if (msgFile.Messages.Any(x => x.Change != null))
                 e.Value = $" * {Path.GetFileNameWithoutExtension(msgFile.Path)}";
             else
                 e.Value = Path.GetFileNameWithoutExtension(msgFile.Path);
@@ -128,36 +131,34 @@ namespace AtlusMSGEditor
         private void ListBoxDirs_Format(object sender, ListControlConvertEventArgs e)
         {
             var msgDir = (MsgDir)e.ListItem;
+            string dirName = msgDir.Path.Replace(dumpOutPath + "\\", "");
 
-            if (UserSettings.Changes.Any(x => Path.GetDirectoryName(x.Path) == msgDir.Path))
-                e.Value = $" * {msgDir.Path.Replace(dumpOutPath + "\\", "")}";
+            if (msgDir.MsgFiles.Any(x => x.Messages.Any(y => y.Change != null)))
+                e.Value = $" * {dirName}";
             else
-                e.Value = msgDir.Path.Replace(dumpOutPath + "\\", "");
+                e.Value = dirName;
         }
 
         private void Desc_Changed(object sender, EventArgs e)
         {
-            if (!txt_MsgTxt.Enabled)
+            if (!txt_MsgTxt.Enabled || !txt_Speaker.Enabled)
                 return;
 
-            var msgFile = (MsgFile)listBox_Files.SelectedItem;
             var msg = (Message)listBox_Msgs.SelectedItem;
+            var msgFile = (MsgFile)listBox_Files.SelectedItem;
 
-            if (UserSettings.Changes.Any(x => x.Path == msgFile.Path
-                && x.MsgName == msg.Name))
+            if (msg.Change != null)
             {
-                var change = UserSettings.Changes.First(x => x.Path == msgFile.Path
-                    && x.MsgName == msg.Name);
-                change.MsgText = txt_MsgTxt.Text;
-                change.Speaker = txt_Speaker.Text;
+                msg.Change.MsgText = txt_MsgTxt.Text;
+                msg.Change.Speaker = txt_Speaker.Text;
             }
             else
-                UserSettings.Changes.Add(new Change() { 
+                msg.Change = new Change() { 
                     Path = Path.GetDirectoryName(msgFile.Path), 
                     MsgName = txt_MsgName.Text,
                     MsgText = txt_MsgTxt.Text,
                     Speaker = txt_Speaker.Text
-                });
+                };
         }
 
         private void ShowOldMsg_CheckedChanged(object sender)

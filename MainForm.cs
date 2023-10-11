@@ -35,6 +35,7 @@ namespace AtlusMSGEditor
             comboBox_Encoding.SelectedIndex = 0;
             if (File.Exists("msgDirs.json"))
                 MsgDirs = JsonConvert.DeserializeObject<List<MsgDir>>(File.ReadAllText("msgDirs.json"));
+
             SetDirectoryListBoxDataSource();
         }
 
@@ -104,12 +105,14 @@ namespace AtlusMSGEditor
 
         public class MsgDir
         {
+            public int Id { get; set; } = 0;
             public string Path { get; set; } = "";
             public List<MsgFile> MsgFiles { get; set; } = new List<MsgFile>();
         }
 
         public class MsgFile
         {
+            public int Id { get; set; } = 0;
             public string Path { get; set; } = "";
             public bool UsedByBf { get; set; } = false;
             public List<Message> Messages { get; set; } = new List<Message>();
@@ -117,10 +120,12 @@ namespace AtlusMSGEditor
 
         public class Message
         {
+            public int Id { get; set; } = 0;
             public string Name { get; set; } = "";
             public string Text { get; set; } = "";
             public string Speaker { get; set; } = "";
             public bool IsSelection { get; set; } = false;
+            public Change Change { get; set; } = null;
         }
 
         private void ImportBMDs_Click(object sender, EventArgs e)
@@ -202,6 +207,10 @@ namespace AtlusMSGEditor
                     case ".pak":
                     case ".pac":
                         ProcessPAC(file);
+                        break;
+                    case ".bin":
+                        if (file.ToUpper().EndsWith("CMM.BIN"))
+                            ProcessPAC(file);
                         break;
                     default:
                         break;
