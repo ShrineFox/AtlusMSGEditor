@@ -32,8 +32,8 @@ namespace AtlusMSGEditor
             MenuStripHelper.SetMenuStripIcons(MenuStripHelper.GetMenuStripIconPairs("Icons.txt"), this);
 
             comboBox_Encoding.SelectedIndex = 0;
-            if (File.Exists("msgDirs.json"))
-                MsgDirs = JsonConvert.DeserializeObject<List<MsgDir>>(File.ReadAllText("msgDirs.json"));
+            if (File.Exists(".\\Dependencies\\msgDirs.json"))
+                MsgDirs = JsonConvert.DeserializeObject<List<MsgDir>>(File.ReadAllText(".\\Dependencies\\msgDirs.json"));
 
             SetDirectoryListBoxDataSource();
         }
