@@ -86,8 +86,8 @@ namespace AtlusMSGEditor
 
             var msg = (Message)listBox_Msgs.SelectedItem;
 
-            txt_MsgName.Enabled = false;
             txt_Speaker.Enabled = false;
+            txt_MsgName.Enabled = false;
 
             txt_MsgName.Text = msg.Name;
             txt_Speaker.Text = msg.Speaker;
@@ -102,11 +102,16 @@ namespace AtlusMSGEditor
             {
                 if (msg.Change != null)
                 {
-                    txt_MsgTxt.Text = msg.Change.MsgText;
-                    txt_Speaker.Text = msg.Change.Speaker;
+                    txt_Speaker.Text = ApplyReplacements(msg.Change.Speaker);
+                    txt_MsgTxt.Text = ApplyReplacements(msg.Change.MsgText);
                 }
-                txt_MsgName.Enabled = true;
+                else
+                {
+                    txt_Speaker.Text = ApplyReplacements(msg.Speaker);
+                    txt_MsgTxt.Text = ApplyReplacements(msg.Text);
+                }
                 txt_Speaker.Enabled = true;
+                txt_MsgName.Enabled = true;
             }
         }
 
@@ -153,12 +158,22 @@ namespace AtlusMSGEditor
                 msg.Change.Speaker = txt_Speaker.Text;
             }
             else
-                msg.Change = new Change() { 
-                    Path = Path.GetDirectoryName(msgFile.Path), 
+            {
+                msg.Change = new Change()
+                {
+                    Path = Path.GetDirectoryName(msgFile.Path),
                     MsgName = txt_MsgName.Text,
                     MsgText = txt_MsgTxt.Text,
                     Speaker = txt_Speaker.Text
                 };
+            }
+        }
+
+        private string ApplyReplacements(string text)
+        {
+            foreach (var replacement in UserSettings.Replacements)
+                text = text.Replace(replacement.TextToReplace, replacement.ReplacementText);
+            return text;
         }
 
         private void ShowOldMsg_CheckedChanged(object sender)

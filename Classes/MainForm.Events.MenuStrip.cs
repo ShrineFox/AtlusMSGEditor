@@ -92,5 +92,15 @@ namespace AtlusMSGEditor
             Output.LogToFile = true;
             Output.LogControl = rtb_Log;
         }
+
+        private void AutoReplace_Click(object sender, EventArgs e)
+        {
+            AutoReplaceForm replaceForm = new AutoReplaceForm();
+            var result = replaceForm.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                UserSettings.Replacements = replaceForm.Replacements;
+            }
+        }
     }
 }

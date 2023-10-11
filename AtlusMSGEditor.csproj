@@ -75,6 +75,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoReplaceForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AutoReplaceForm.Designer.cs">
+      <DependentUpon>AutoReplaceForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Classes\MainForm.Events.MenuStrip.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -89,6 +95,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="AutoReplaceForm.resx">
+      <DependentUpon>AutoReplaceForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
