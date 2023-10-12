@@ -77,6 +77,8 @@ namespace AtlusMSGEditor
             this.chk_IncludeFilesInSearch = new MetroSet_UI.Controls.MetroSetCheckBox();
             this.listBox_Files = new System.Windows.Forms.ListBox();
             this.rtb_Log = new System.Windows.Forms.RichTextBox();
+            this.deleteExistingOutputDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.createJSONDumpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip_Main.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
@@ -129,7 +131,8 @@ namespace AtlusMSGEditor
             this.loadToolStripMenuItem,
             this.importToolStripMenuItem,
             this.exportToolStripMenuItem,
-            this.exportTXTsToolStripMenuItem});
+            this.exportTXTsToolStripMenuItem,
+            this.createJSONDumpToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
             this.fileToolStripMenuItem.Text = "File";
@@ -137,38 +140,36 @@ namespace AtlusMSGEditor
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(212, 26);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.saveToolStripMenuItem.Text = "Save Project";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.Save_Click);
             // 
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(212, 26);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.loadToolStripMenuItem.Text = "Load Project";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.Load_Click);
             // 
             // importToolStripMenuItem
             // 
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(212, 26);
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.importToolStripMenuItem.Text = "Import .BMDs";
-            this.importToolStripMenuItem.Visible = false;
             this.importToolStripMenuItem.Click += new System.EventHandler(this.ImportBMDs_Click);
             // 
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(212, 26);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.exportToolStripMenuItem.Text = "Export .BMDs";
-            this.exportToolStripMenuItem.Visible = false;
+            this.exportToolStripMenuItem.Click += new System.EventHandler(this.ExportBMDs_Click);
             // 
             // exportTXTsToolStripMenuItem
             // 
             this.exportTXTsToolStripMenuItem.Name = "exportTXTsToolStripMenuItem";
-            this.exportTXTsToolStripMenuItem.Size = new System.Drawing.Size(212, 26);
+            this.exportTXTsToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.exportTXTsToolStripMenuItem.Text = "Create .TXT Dump";
-            this.exportTXTsToolStripMenuItem.Visible = false;
             this.exportTXTsToolStripMenuItem.Click += new System.EventHandler(this.ExportTXTs_Click);
             // 
             // optionsToolStripMenuItem
@@ -177,6 +178,7 @@ namespace AtlusMSGEditor
             this.outputBMDToolStripMenuItem,
             this.deleteOutputMSGToolStripMenuItem,
             this.deleteExistingDumpDirToolStripMenuItem,
+            this.deleteExistingOutputDirToolStripMenuItem,
             this.comboBox_Encoding});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(75, 24);
@@ -188,17 +190,15 @@ namespace AtlusMSGEditor
             this.outputBMDToolStripMenuItem.CheckOnClick = true;
             this.outputBMDToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.outputBMDToolStripMenuItem.Name = "outputBMDToolStripMenuItem";
-            this.outputBMDToolStripMenuItem.Size = new System.Drawing.Size(260, 26);
-            this.outputBMDToolStripMenuItem.Text = "Output BMD";
-            this.outputBMDToolStripMenuItem.Visible = false;
+            this.outputBMDToolStripMenuItem.Size = new System.Drawing.Size(265, 26);
+            this.outputBMDToolStripMenuItem.Text = "Output BF/BMD";
             // 
             // deleteOutputMSGToolStripMenuItem
             // 
             this.deleteOutputMSGToolStripMenuItem.CheckOnClick = true;
             this.deleteOutputMSGToolStripMenuItem.Name = "deleteOutputMSGToolStripMenuItem";
-            this.deleteOutputMSGToolStripMenuItem.Size = new System.Drawing.Size(260, 26);
+            this.deleteOutputMSGToolStripMenuItem.Size = new System.Drawing.Size(265, 26);
             this.deleteOutputMSGToolStripMenuItem.Text = "Delete Output MSG";
-            this.deleteOutputMSGToolStripMenuItem.Visible = false;
             // 
             // deleteExistingDumpDirToolStripMenuItem
             // 
@@ -206,9 +206,8 @@ namespace AtlusMSGEditor
             this.deleteExistingDumpDirToolStripMenuItem.CheckOnClick = true;
             this.deleteExistingDumpDirToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.deleteExistingDumpDirToolStripMenuItem.Name = "deleteExistingDumpDirToolStripMenuItem";
-            this.deleteExistingDumpDirToolStripMenuItem.Size = new System.Drawing.Size(260, 26);
+            this.deleteExistingDumpDirToolStripMenuItem.Size = new System.Drawing.Size(265, 26);
             this.deleteExistingDumpDirToolStripMenuItem.Text = "Delete Existing Dump Dir";
-            this.deleteExistingDumpDirToolStripMenuItem.Visible = false;
             // 
             // comboBox_Encoding
             // 
@@ -637,6 +636,20 @@ namespace AtlusMSGEditor
             this.rtb_Log.TabIndex = 0;
             this.rtb_Log.Text = "";
             // 
+            // deleteExistingOutputDirToolStripMenuItem
+            // 
+            this.deleteExistingOutputDirToolStripMenuItem.CheckOnClick = true;
+            this.deleteExistingOutputDirToolStripMenuItem.Name = "deleteExistingOutputDirToolStripMenuItem";
+            this.deleteExistingOutputDirToolStripMenuItem.Size = new System.Drawing.Size(265, 26);
+            this.deleteExistingOutputDirToolStripMenuItem.Text = "Delete Existing Output Dir";
+            // 
+            // createJSONDumpToolStripMenuItem
+            // 
+            this.createJSONDumpToolStripMenuItem.Name = "createJSONDumpToolStripMenuItem";
+            this.createJSONDumpToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.createJSONDumpToolStripMenuItem.Text = "Create .JSON Dump";
+            this.createJSONDumpToolStripMenuItem.Click += new System.EventHandler(this.JsonDump_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -740,5 +753,7 @@ namespace AtlusMSGEditor
         private TableLayoutPanel tlp_ListAndSearch;
         private TextBox txt_Search;
         private ListBox listBox_Msgs;
+        private ToolStripMenuItem deleteExistingOutputDirToolStripMenuItem;
+        private ToolStripMenuItem createJSONDumpToolStripMenuItem;
     }
 }

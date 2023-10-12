@@ -21,6 +21,8 @@ namespace AtlusMSGEditor
         public Encoding userEncoding = AtlusEncoding.Persona5RoyalEFIGS;
         public string dumpInputPath = "";
         public string dumpOutPath = ".\\Dump";
+        public string exportPath = ".\\Output";
+        public string defaultJson = ".\\Dependencies\\msgDirs.json";
 
         public MainForm()
         {
@@ -32,8 +34,8 @@ namespace AtlusMSGEditor
             MenuStripHelper.SetMenuStripIcons(MenuStripHelper.GetMenuStripIconPairs("Icons.txt"), this);
 
             comboBox_Encoding.SelectedIndex = 0;
-            if (File.Exists(".\\Dependencies\\msgDirs.json"))
-                MsgDirs = JsonConvert.DeserializeObject<List<MsgDir>>(File.ReadAllText(".\\Dependencies\\msgDirs.json"));
+            if (File.Exists(defaultJson))
+                MsgDirs = JsonConvert.DeserializeObject<List<MsgDir>>(File.ReadAllText(defaultJson));
 
             SetDirectoryListBoxDataSource();
         }
@@ -158,9 +160,9 @@ namespace AtlusMSGEditor
                 Output.Log($"Done Dumping .BMDs to \"{dumpOutPath}\".");
 
                 // Read MSG files from Dump dir to MsgDirs object
-                Output.Log($"Loading .BMD dump into memory from \"{dumpOutPath}\".");
-                LoadMsgsFromDumpDir();
-                Output.Log($"Done loading .BMD dump.");
+                //Output.Log($"Loading .BMD dump into memory from \"{dumpOutPath}\".");
+                //LoadMsgsFromDumpDir();
+                //Output.Log($"Done loading .BMD dump.");
             }
         }
 
@@ -189,15 +191,16 @@ namespace AtlusMSGEditor
 
         private void CombineToTxt(string directory, string extension)
         {
-            string txt = "";
+            string txtPath = Path.Combine(exportPath, extension.Replace(".", "") + "Dump.txt");
+            Directory.CreateDirectory(exportPath);
+            File.CreateText(txtPath).Close();
 
             foreach (var file in Directory.GetFiles(directory, $"*{extension}", SearchOption.AllDirectories))
             {
-                txt += $"// {FileSys.GetExtensionlessPath(file.Replace(dumpOutPath, "."))}\n";
-                txt += File.ReadAllText(file) + "\n";
+                File.AppendAllText(txtPath, 
+                    $"// {FileSys.GetExtensionlessPath(file.Replace(dumpOutPath, "."))}" +
+                    $"\n{File.ReadAllText(file)}\n");
             }
-
-            File.WriteAllText(extension.Replace(".","") + "Dump.txt", txt);
         }
 
         private void ImportBMDs(string[] importFiles)
@@ -251,28 +254,31 @@ namespace AtlusMSGEditor
             }
         }
 
-        private void DumpScript(string bmdPath)
+        private void DumpScript(string scriptPath)
         {
             string extension = ".msg";
-            if (Path.GetExtension(bmdPath).ToLower() == ".bf")
+            if (Path.GetExtension(scriptPath).ToLower() == ".bf")
+            {
+                File.Copy(scriptPath, scriptPath.Replace(dumpInputPath, dumpOutPath));
                 extension = ".flow";
+            }
 
-            string outPath = bmdPath.Replace(dumpInputPath, dumpOutPath) + extension;
+            string outPath = scriptPath.Replace(dumpInputPath, dumpOutPath) + extension;
             Directory.CreateDirectory(Path.GetDirectoryName(outPath));
 
-            InitializeScriptCompiler(bmdPath, outPath);
+            InitializeScriptCompiler(scriptPath, outPath);
 
             if (!File.Exists(outPath))
             {
                 try
                 {
                     AtlusScriptCompiler.Program.Main(new string[] {
-                bmdPath, "-Decompile",
+                scriptPath, "-Decompile",
                 "-Library", "P5R",
                 "-Encoding", comboBox_Encoding.SelectedItem.ToString(),
                 "-Out", outPath });
                 }
-                catch { File.AppendAllText("dumpErrors.txt", bmdPath + "\n"); }
+                catch { File.AppendAllText("dumpErrors.txt", scriptPath + "\n"); }
             }
         }
 

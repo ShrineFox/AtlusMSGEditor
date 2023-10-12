@@ -173,7 +173,7 @@ namespace AtlusMSGEditor
 
         private string ApplyReplacements(string text)
         {
-            foreach (var replacement in UserSettings.Replacements)
+            foreach (var replacement in UserSettings.Replacements.Where(x => string.IsNullOrEmpty(x.TextToReplace)))
                 text = text.Replace(replacement.TextToReplace, replacement.ReplacementText);
             return text;
         }
