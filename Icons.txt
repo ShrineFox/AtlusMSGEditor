@@ -7,3 +7,4 @@ toggleThemeToolStripMenuItem weather_cloudy
 optionsToolStripMenuItem cog
 exportTXTsToolStripMenuItem report
 autoReplaceToolStripMenuItem text_replace
+createJSONDumpToolStripMenuItem page_code

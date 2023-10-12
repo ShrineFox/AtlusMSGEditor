@@ -1,11 +1,9 @@
-﻿using AtlusFileSystemLibrary.FileSystems.APAK;
-using MetroSet_UI.Controls;
+﻿using MetroSet_UI.Controls;
 using MetroSet_UI.Forms;
 using System;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using static AtlusMSGEditor.MainForm;
 
 namespace AtlusMSGEditor
 {
@@ -14,6 +12,26 @@ namespace AtlusMSGEditor
         BindingSource bs_ListBox_Files = new BindingSource();
         BindingSource bs_ListBox_Dirs = new BindingSource();
         BindingSource bs_ListBox_Msgs = new BindingSource();
+
+        private void RefreshForm()
+        {
+            if (listBox_Directories.SelectedIndex != -1)
+                RefreshListboxes();
+            if (listBox_Msgs.SelectedIndex != -1)
+                SetFormFields();
+        }
+
+        private void RefreshListboxes()
+        {
+            selectedDir = listBox_Directories.SelectedIndex;
+            selectedFile = listBox_Files.SelectedIndex;
+            selectedMsg = listBox_Msgs.SelectedIndex;
+
+            if (listBox_Directories.Items.Count > 1)
+            {
+                UpdateDirsListBoxFormatting();
+            }
+        }
 
         private void SetDirectoryListBoxDataSource()
         {
@@ -25,12 +43,31 @@ namespace AtlusMSGEditor
             listBox_Directories.FormattingEnabled = true;
             listBox_Directories.Format += ListBoxDirs_Format;
 
-            //listBox_Directories.SelectedIndex = 0;
+            //listBox_Directories.SelectedIndex = selectedDir;
         }
 
         private void ListBox_Dirs_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SetFilesListBoxDataSource();
+            if (listBox_Directories.SelectedIndex != -1 || listBox_Files.DataSource == null)
+                SetFilesListBoxDataSource();
+        }
+
+        private void UpdateDirsListBoxFormatting()
+        {
+            listBox_Directories.DataSource = null;
+            listBox_Directories.DataSource = bs_ListBox_Dirs;
+        }
+
+        private void UpdateFilesListBoxFormatting()
+        {
+            listBox_Files.DataSource = null;
+            listBox_Files.DataSource = bs_ListBox_Files;
+        }
+
+        private void UpdateMsgsListBoxFormatting()
+        {
+            listBox_Msgs.DataSource = null;
+            listBox_Msgs.DataSource = bs_ListBox_Msgs;
         }
 
         private void SetFilesListBoxDataSource()
@@ -49,14 +86,16 @@ namespace AtlusMSGEditor
             listBox_Files.FormattingEnabled = true;
             listBox_Files.Format += ListBoxFiles_Format;
 
-            //listBox_Files.SelectedIndex = 0;
             if (!chk_ShowOldMsgText.Checked)
                 txt_MsgTxt.Enabled = true;
         }
 
         private void ListBox_Files_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SetMsgsListBoxDataSource();
+            if (listBox_Files.SelectedIndex != -1 || listBox_Msgs.DataSource == null)
+                SetMsgsListBoxDataSource();
+            else
+                UpdateMsgsListBoxFormatting();
         }
 
         private void SetMsgsListBoxDataSource()
@@ -78,7 +117,8 @@ namespace AtlusMSGEditor
 
         private void ListBox_Msgs_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SetFormFields();
+            if (listBox_Msgs.SelectedIndex != -1)
+                SetFormFields();
         }
 
         private void SetFormFields()
@@ -122,7 +162,12 @@ namespace AtlusMSGEditor
             var msg = (Message)e.ListItem;
 
             if (msg.Change != null)
-                e.Value = $" * {msg.Name}";
+                e.Value = $" [*] {msg.Name}";
+            else if (showAutoReplacedFilesToolStripMenuItem.Checked && 
+                (msg.Text != ApplyReplacements(msg.Text) || msg.Speaker != ApplyReplacements(msg.Speaker)))
+            {
+                e.Value = $" [A] {msg.Name}";
+            }
         }
 
         private void ListBoxFiles_Format(object sender, ListControlConvertEventArgs e)
@@ -130,7 +175,10 @@ namespace AtlusMSGEditor
             var msgFile = (MsgFile)e.ListItem;
 
             if (msgFile.Messages.Any(x => x.Change != null))
-                e.Value = $" * {Path.GetFileNameWithoutExtension(msgFile.Path)}";
+                e.Value = $" [*] {Path.GetFileNameWithoutExtension(msgFile.Path)}";
+            else if (showAutoReplacedFilesToolStripMenuItem.Checked 
+                && msgFile.Messages.Any(x => x.Text != ApplyReplacements(x.Text) || x.Speaker != ApplyReplacements(x.Speaker)))
+                e.Value = $" [A] {Path.GetFileNameWithoutExtension(msgFile.Path)}";
             else
                 e.Value = Path.GetFileNameWithoutExtension(msgFile.Path);
         }
@@ -141,7 +189,12 @@ namespace AtlusMSGEditor
             string dirName = msgDir.Path.Replace(dumpOutPath + "\\", "");
 
             if (msgDir.MsgFiles.Any(x => x.Messages.Any(y => y.Change != null)))
-                e.Value = $" * {dirName}";
+                e.Value = $" [*] {dirName}";
+            else if (showAutoReplacedFilesToolStripMenuItem.Checked && 
+                msgDir.MsgFiles.Any(x => x.Messages.Any(y =>
+                y.Text != ApplyReplacements(y.Text) || y.Speaker != ApplyReplacements(y.Speaker)
+            )))
+                e.Value = $" [A] {dirName}";
             else
                 e.Value = dirName;
         }
@@ -156,11 +209,21 @@ namespace AtlusMSGEditor
 
             if (msg.Change != null)
             {
-                msg.Change.MsgText = txt_MsgTxt.Text;
-                msg.Change.Speaker = txt_Speaker.Text;
+                // Revert change if identical to original message
+                if (ApplyReplacements(msg.Speaker) == txt_Speaker.Text 
+                    && ApplyReplacements(msg.Text) == txt_MsgTxt.Text)
+                    msg.Change = null;
+                else
+                {
+                    // Update changed text
+                    msg.Change.MsgText = txt_MsgTxt.Text;
+                    msg.Change.Speaker = txt_Speaker.Text;
+                }
+                
             }
             else
             {
+                // Add new change to list of changes
                 msg.Change = new Change()
                 {
                     Path = msgFile.Path,
@@ -169,13 +232,6 @@ namespace AtlusMSGEditor
                     Speaker = txt_Speaker.Text
                 };
             }
-        }
-
-        private string ApplyReplacements(string text)
-        {
-            foreach (var replacement in UserSettings.Replacements.Where(x => string.IsNullOrEmpty(x.TextToReplace)))
-                text = text.Replace(replacement.TextToReplace, replacement.ReplacementText);
-            return text;
         }
 
         private void ShowOldMsg_CheckedChanged(object sender)
