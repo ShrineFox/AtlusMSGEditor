@@ -1,38 +1,39 @@
 # AtlusMSGEditor
-![](https://i.imgur.com/ur1nn2p.png)  
-Create and organize text editing projects for Persona games
+![](https://i.imgur.com/D94QM9r.png)
+This program allows you to create and organize text editing projects for Persona games.  
 
 # Notice
-This program allows you to create and organize text editing projects for Persona games.  
-It's currently in beta and missing features that would make it usable for an actual project. For now, you can at least create and manage project files. The full release build will allow you to load your project and export your changes to .bf/.bmd.  
+**Currently, only P5R (PC/Switch) is supported**. Support for other games will be added in the future.
 
 # Features
-- Loads default text dump from P5R (PC, English) from ./Dependencies/MsgDirs.json
-- You can save/load changes as a project .json (can't export to .bmd/.bf yet, will be added in release version)
-- You can search the txt dump for a string
--- Narrow down whether the search includes other files or directories using the checkboxes
--- Search results include message name, message text, or speaker text
--- Search results include both changes and the original message
-- Add terms to the auto-replace list and they will be replaced in speaker/message text automatically
+- Load a default text dump from ``./Dependencies/MsgDirs.json`` on startup
+- Save/load your edits as a shareable ``.json`` for easy backup and collaboration
+- You can search the dump for a string, with the option to limit your search to the file, directory, or entire dump
+- Add terms to the auto-replace list and they will be replaced in speaker/message text automatically (uses regex, so do ``\bYOURWORDHERE\b`` to match whole word)
+- Import all ``.BF``/``.BMD`` extracted from your game dump. It'll be automatically decompiled to the ``./Dump`` folder (including files in PACs)
+- Export your dump to the ``./Output`` folder as a ``.json`` to use at startup, or as a pair of ``.txt`` files containing all the dumped flowscript and messagescript
+- Export your changes as brand new ``.BF``/``.BMD`` in the ``./Output`` folder (``.PAC``s are not repacked yet)
+- Automatically inject edited ``.BMD`` into the ``.BF`` it originated from (requires you to import from your own dump since it uses ``.BF`` files from ``./Dump``)
 
-# Disabled Features
-For now, I've removed the following options since they either don't work correctly or haven't been implemented yet.  
-They should appear in the full release.
-- Importing .BF/.BMD text from the game's extracted CPK files
-- Exporting dump as flow/msg .TXT files
-- Creating a .json of the MSG dump to load by default (like the supplied P5R one)
-- Exporting changes as edited .bf/.flow files
+# Configurable Settings
+Note: Currently, these settings are not saved between sessions.
+- Switch between light/dark theme
+- Optionally skip compiling ``.msg`` to ``.BMD``/``.BF`` (in case you're using a Reloaded II add-on to compile on the fly)
+- Optionally delete all ``.msg`` files from ``./Output`` when exporting your changes
+- Optionally delete existing ``./Dump`` directory when importing a new game dump
+- Optionally delete existing ``./Output`` directory when exporting new changes
+- Optionally show which directories/files/messages are affected by Auto-Replace (this is disabled by default since it can be slow)
+- Choose between "P5R_EFIGS", "P5R_JAPANESE" and "P5R_CHINESE" encoding
 
 # Planned Features
-The following features are just ideas for now and probably won't appear in the first full release.  
-- Including .flow files in editor (either in a separate tab or alongside .MSGs with a filter option)
-- Opening .flow/.msg files in Notepad++ for easier editing
+The following features are just ideas for now and might appear in future releases.
+- Repacking archives when exporting changed files originally contained within them (``.PAC``/``.BIN``)
+- Support for dumps from other games
+- Including ``.flow`` files in editor (either in a separate tab or alongside ``.msg``s with a filter option)
+- Opening ``.flow``/``.msg`` files in Notepad++ for easier editing
 - Adding/removing/renaming files, messages, or directories
 - Setting notes for directories/messages/files for easier navigation
-- Show files affected by auto-replace (if a fast enough way to check is possible)
-- Instantly show files affected by user changes without having to reselect?
-- Support for other games
 
 # Project Status
 See [here](https://trello.com/c/9NuvNvOO/112-atlusmsgeditor) for the current completion status.  
-The beta release can be found [here](https://github.com/ShrineFox/AtlusMSGEditor/releases).
+The latest release can be found [here](https://github.com/ShrineFox/AtlusMSGEditor/releases).
