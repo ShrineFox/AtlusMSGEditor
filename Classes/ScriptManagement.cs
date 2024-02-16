@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
+using static AtlusMSGEditor.MainForm;
 
 namespace AtlusMSGEditor
 {
@@ -25,7 +26,7 @@ namespace AtlusMSGEditor
         private List<Message> GetMessagesFromDump(string msgPath)
         {
             string[] lines = File.ReadAllText(msgPath)
-                        .Replace("[s]", "").Replace("[n]", "\r\n")
+                        .Replace("[s]", "")
                         .Replace("[f 0 5 65278][f 2 1]", "")
                         .Split('\n');
 
@@ -301,12 +302,13 @@ namespace AtlusMSGEditor
 
         private void ExportMSGsToPath(string path)
         {
-            foreach (var dir in MsgDirs)
+            for (int i = 0; i < MsgDirs.Count; i++)
             {
-                foreach (var file in dir.MsgFiles.Where(x =>
+                foreach (var file in MsgDirs[i].MsgFiles.Where(x =>
                     x.Messages.Any(y =>
                         y.Change != null ||
-                        y.Text != ApplyReplacements(y.Text) || y.Speaker != ApplyReplacements(y.Speaker)
+                        (exportAutoReplacedFilesToolStripMenuItem.Checked 
+                            && (y.Text != ApplyReplacements(y.Text) || y.Speaker != ApplyReplacements(y.Speaker)) )
                     )))
                 {
                     string msgTxt = "";
@@ -337,30 +339,39 @@ namespace AtlusMSGEditor
                     Directory.CreateDirectory(Path.GetDirectoryName(outPath));
                     File.WriteAllText(outPath, msgTxt);
                 }
+
+                double dbl = i / MsgDirs.Count;
+                SetProgress(Convert.ToInt32(Math.Round(dbl, 0)));
             }
         }
 
         private void CompileMSGsInPath(string path)
         {
-            foreach (var msgFile in Directory.GetFiles(path, "*.msg", SearchOption.AllDirectories))
+            var msgFiles = Directory.GetFiles(path, "*.msg", SearchOption.AllDirectories);
+
+            for (int i = 0; i < msgFiles.Length; i++)
             {
-                string outPath = FileSys.GetExtensionlessPath(msgFile);
-                if (Path.GetExtension(outPath).ToLower() == ".bf")
+                string outPath = FileSys.GetExtensionlessPath(msgFiles[i]);
+                string ext = Path.GetExtension(outPath).ToLower();
+                if (ext == ".bf")
                 {
-                    InjectMSGIntoBF(msgFile, outPath);
+                    InjectMSGIntoBF(msgFiles[i], outPath);
                 }
                 else
                 {
-                    CompileMSGToBMD(msgFile, outPath);
+                    CompileMSGToBMD(msgFiles[i], outPath);
                 }
+
+                double dbl = i / msgFiles.Length;
+                SetProgress(Convert.ToInt32(Math.Round(dbl, 0)));
             }
         }
 
         private void InjectMSGIntoBF(string msgFile, string outBfPath)
         {
-            string dumpBfPath = FileSys.GetExtensionlessPath(msgFile).Replace(exportPath, dumpOutPath);
+            string dumpBfPath = FileSys.GetExtensionlessPath(msgFile).Replace(exportPath, dumpInputPath);
 
-            if (!File.Exists(dumpBfPath))
+            if (!File.Exists(dumpBfPath) || Path.GetExtension(dumpBfPath).ToLower() != ".bf")
                 return;
 
             FlowScript flowScript = FlowScript.FromFile(dumpBfPath, null);
@@ -385,12 +396,15 @@ namespace AtlusMSGEditor
         {
             InitializeScriptCompiler(msgFile, outPath);
 
-            AtlusScriptCompiler.Program.Main(new string[] {
+            Invoke(new MethodInvoker(() =>
+            {
+                AtlusScriptCompiler.Program.Main(new string[] {
                     msgFile, "-Compile",
                     "-Library", "P5R",
                     "-Encoding", comboBox_Encoding.SelectedItem.ToString(),
                     "-OutFormat", "V1BE",
                     "-Out", outPath });
+            }));
         }
     }
 }

@@ -15,6 +15,7 @@ using System.Windows.Forms;
 using AtlusScriptLibrary.FlowScriptLanguage;
 using AtlusScriptLibrary.Common.Logging;
 using AtlusScriptLibrary.MessageScriptLanguage.Compiler;
+using System.Threading;
 
 namespace AtlusMSGEditor
 {
@@ -94,7 +95,10 @@ namespace AtlusMSGEditor
 
         private void ExportBMDs_Click(object sender, EventArgs e)
         {
-            ExportBMDs();
+            new Thread(() =>
+            {
+                ExportBMDs();
+            }).Start();
         }
 
         private void AutoReplace_Click(object sender, EventArgs e)
@@ -148,5 +152,18 @@ namespace AtlusMSGEditor
         {
             RefreshForm();
         }
+
+        private void SetInputPath_Click(object sender, EventArgs e)
+        {
+            var path = WinFormsDialogs.SelectFolder("Choose Dir Containing CPK Dump Folders");
+            if (!String.IsNullOrEmpty(path))
+                dumpInputPath = path;
+        }
+
+        private void SetProgress(int percent)
+        {
+            progressBar1.SyncUI(() => { progressBar1.Value = percent; progressBar1.Update(); }, true);
+        }
+        
     }
 }

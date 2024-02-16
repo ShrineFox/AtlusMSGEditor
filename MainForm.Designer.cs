@@ -43,11 +43,14 @@ namespace AtlusMSGEditor
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportTXTsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createJSONDumpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setInputPathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.outputBMDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteOutputMSGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteExistingDumpDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteExistingOutputDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showAutoReplacedFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportAutoReplacedFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.comboBox_Encoding = new System.Windows.Forms.ToolStripComboBox();
             this.toggleThemeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoReplaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -79,8 +82,9 @@ namespace AtlusMSGEditor
             this.tlp_FilesAndSearch = new System.Windows.Forms.TableLayoutPanel();
             this.chk_IncludeFilesInSearch = new MetroSet_UI.Controls.MetroSetCheckBox();
             this.listBox_Files = new System.Windows.Forms.ListBox();
+            this.tlp_Progress = new System.Windows.Forms.TableLayoutPanel();
             this.rtb_Log = new System.Windows.Forms.RichTextBox();
-            this.showAutoReplacedFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.menuStrip_Main.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
@@ -106,6 +110,7 @@ namespace AtlusMSGEditor
             this.splitContainer_Files.SuspendLayout();
             this.groupBox_Files.SuspendLayout();
             this.tlp_FilesAndSearch.SuspendLayout();
+            this.tlp_Progress.SuspendLayout();
             this.SuspendLayout();
             // 
             // columnHeader
@@ -135,7 +140,8 @@ namespace AtlusMSGEditor
             this.importToolStripMenuItem,
             this.exportToolStripMenuItem,
             this.exportTXTsToolStripMenuItem,
-            this.createJSONDumpToolStripMenuItem});
+            this.createJSONDumpToolStripMenuItem,
+            this.setInputPathToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
             this.fileToolStripMenuItem.Text = "File";
@@ -143,44 +149,51 @@ namespace AtlusMSGEditor
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(222, 26);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.saveToolStripMenuItem.Text = "Save Project";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.Save_Click);
             // 
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(222, 26);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.loadToolStripMenuItem.Text = "Load Project";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.Load_Click);
             // 
             // importToolStripMenuItem
             // 
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(222, 26);
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.importToolStripMenuItem.Text = "Import .BMDs";
             this.importToolStripMenuItem.Click += new System.EventHandler(this.ImportBMDs_Click);
             // 
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(222, 26);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.exportToolStripMenuItem.Text = "Export .BMDs";
             this.exportToolStripMenuItem.Click += new System.EventHandler(this.ExportBMDs_Click);
             // 
             // exportTXTsToolStripMenuItem
             // 
             this.exportTXTsToolStripMenuItem.Name = "exportTXTsToolStripMenuItem";
-            this.exportTXTsToolStripMenuItem.Size = new System.Drawing.Size(222, 26);
+            this.exportTXTsToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.exportTXTsToolStripMenuItem.Text = "Create .TXT Dump";
             this.exportTXTsToolStripMenuItem.Click += new System.EventHandler(this.ExportTXTs_Click);
             // 
             // createJSONDumpToolStripMenuItem
             // 
             this.createJSONDumpToolStripMenuItem.Name = "createJSONDumpToolStripMenuItem";
-            this.createJSONDumpToolStripMenuItem.Size = new System.Drawing.Size(222, 26);
+            this.createJSONDumpToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.createJSONDumpToolStripMenuItem.Text = "Create .JSON Dump";
             this.createJSONDumpToolStripMenuItem.Click += new System.EventHandler(this.JsonDump_Click);
+            // 
+            // setInputPathToolStripMenuItem
+            // 
+            this.setInputPathToolStripMenuItem.Name = "setInputPathToolStripMenuItem";
+            this.setInputPathToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.setInputPathToolStripMenuItem.Text = "Set Input Path...";
+            this.setInputPathToolStripMenuItem.Click += new System.EventHandler(this.SetInputPath_Click);
             // 
             // optionsToolStripMenuItem
             // 
@@ -190,6 +203,7 @@ namespace AtlusMSGEditor
             this.deleteExistingDumpDirToolStripMenuItem,
             this.deleteExistingOutputDirToolStripMenuItem,
             this.showAutoReplacedFilesToolStripMenuItem,
+            this.exportAutoReplacedFilesToolStripMenuItem,
             this.comboBox_Encoding});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(75, 24);
@@ -201,7 +215,7 @@ namespace AtlusMSGEditor
             this.outputBMDToolStripMenuItem.CheckOnClick = true;
             this.outputBMDToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.outputBMDToolStripMenuItem.Name = "outputBMDToolStripMenuItem";
-            this.outputBMDToolStripMenuItem.Size = new System.Drawing.Size(265, 26);
+            this.outputBMDToolStripMenuItem.Size = new System.Drawing.Size(272, 26);
             this.outputBMDToolStripMenuItem.Text = "Output BF/BMD";
             // 
             // deleteOutputMSGToolStripMenuItem
@@ -210,7 +224,7 @@ namespace AtlusMSGEditor
             this.deleteOutputMSGToolStripMenuItem.CheckOnClick = true;
             this.deleteOutputMSGToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.deleteOutputMSGToolStripMenuItem.Name = "deleteOutputMSGToolStripMenuItem";
-            this.deleteOutputMSGToolStripMenuItem.Size = new System.Drawing.Size(265, 26);
+            this.deleteOutputMSGToolStripMenuItem.Size = new System.Drawing.Size(272, 26);
             this.deleteOutputMSGToolStripMenuItem.Text = "Delete Output MSG";
             // 
             // deleteExistingDumpDirToolStripMenuItem
@@ -219,7 +233,7 @@ namespace AtlusMSGEditor
             this.deleteExistingDumpDirToolStripMenuItem.CheckOnClick = true;
             this.deleteExistingDumpDirToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.deleteExistingDumpDirToolStripMenuItem.Name = "deleteExistingDumpDirToolStripMenuItem";
-            this.deleteExistingDumpDirToolStripMenuItem.Size = new System.Drawing.Size(265, 26);
+            this.deleteExistingDumpDirToolStripMenuItem.Size = new System.Drawing.Size(272, 26);
             this.deleteExistingDumpDirToolStripMenuItem.Text = "Delete Existing Dump Dir";
             // 
             // deleteExistingOutputDirToolStripMenuItem
@@ -228,8 +242,22 @@ namespace AtlusMSGEditor
             this.deleteExistingOutputDirToolStripMenuItem.CheckOnClick = true;
             this.deleteExistingOutputDirToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.deleteExistingOutputDirToolStripMenuItem.Name = "deleteExistingOutputDirToolStripMenuItem";
-            this.deleteExistingOutputDirToolStripMenuItem.Size = new System.Drawing.Size(265, 26);
+            this.deleteExistingOutputDirToolStripMenuItem.Size = new System.Drawing.Size(272, 26);
             this.deleteExistingOutputDirToolStripMenuItem.Text = "Delete Existing Output Dir";
+            // 
+            // showAutoReplacedFilesToolStripMenuItem
+            // 
+            this.showAutoReplacedFilesToolStripMenuItem.CheckOnClick = true;
+            this.showAutoReplacedFilesToolStripMenuItem.Name = "showAutoReplacedFilesToolStripMenuItem";
+            this.showAutoReplacedFilesToolStripMenuItem.Size = new System.Drawing.Size(272, 26);
+            this.showAutoReplacedFilesToolStripMenuItem.Text = "Show Auto-Replaced Files";
+            // 
+            // exportAutoReplacedFilesToolStripMenuItem
+            // 
+            this.exportAutoReplacedFilesToolStripMenuItem.CheckOnClick = true;
+            this.exportAutoReplacedFilesToolStripMenuItem.Name = "exportAutoReplacedFilesToolStripMenuItem";
+            this.exportAutoReplacedFilesToolStripMenuItem.Size = new System.Drawing.Size(272, 26);
+            this.exportAutoReplacedFilesToolStripMenuItem.Text = "Export Auto-Replaced Files";
             // 
             // comboBox_Encoding
             // 
@@ -277,7 +305,7 @@ namespace AtlusMSGEditor
             // splitContainer_Main.Panel2
             // 
             this.splitContainer_Main.Panel2.Controls.Add(this.panel_Editor);
-            this.splitContainer_Main.Size = new System.Drawing.Size(557, 437);
+            this.splitContainer_Main.Size = new System.Drawing.Size(557, 435);
             this.splitContainer_Main.SplitterDistance = 160;
             this.splitContainer_Main.TabIndex = 3;
             // 
@@ -287,7 +315,7 @@ namespace AtlusMSGEditor
             this.groupBox_Msgs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox_Msgs.Location = new System.Drawing.Point(0, 0);
             this.groupBox_Msgs.Name = "groupBox_Msgs";
-            this.groupBox_Msgs.Size = new System.Drawing.Size(160, 437);
+            this.groupBox_Msgs.Size = new System.Drawing.Size(160, 435);
             this.groupBox_Msgs.TabIndex = 0;
             this.groupBox_Msgs.TabStop = false;
             this.groupBox_Msgs.Text = "Messages";
@@ -305,7 +333,7 @@ namespace AtlusMSGEditor
             this.tlp_ListAndSearch.RowCount = 2;
             this.tlp_ListAndSearch.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8F));
             this.tlp_ListAndSearch.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 92F));
-            this.tlp_ListAndSearch.Size = new System.Drawing.Size(154, 412);
+            this.tlp_ListAndSearch.Size = new System.Drawing.Size(154, 410);
             this.tlp_ListAndSearch.TabIndex = 2;
             // 
             // txt_Search
@@ -315,6 +343,7 @@ namespace AtlusMSGEditor
             this.txt_Search.Name = "txt_Search";
             this.txt_Search.Size = new System.Drawing.Size(148, 26);
             this.txt_Search.TabIndex = 5;
+            this.txt_Search.Text = "Search...";
             this.txt_Search.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Search_KeyDown);
             // 
             // listBox_Msgs
@@ -324,7 +353,7 @@ namespace AtlusMSGEditor
             this.listBox_Msgs.ItemHeight = 20;
             this.listBox_Msgs.Location = new System.Drawing.Point(3, 35);
             this.listBox_Msgs.Name = "listBox_Msgs";
-            this.listBox_Msgs.Size = new System.Drawing.Size(148, 374);
+            this.listBox_Msgs.Size = new System.Drawing.Size(148, 372);
             this.listBox_Msgs.TabIndex = 0;
             this.listBox_Msgs.SelectedIndexChanged += new System.EventHandler(this.ListBox_Msgs_SelectedIndexChanged);
             this.listBox_Msgs.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ListBox_KeyDown);
@@ -337,7 +366,7 @@ namespace AtlusMSGEditor
             this.panel_Editor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel_Editor.Location = new System.Drawing.Point(0, 0);
             this.panel_Editor.Name = "panel_Editor";
-            this.panel_Editor.Size = new System.Drawing.Size(393, 437);
+            this.panel_Editor.Size = new System.Drawing.Size(393, 435);
             this.panel_Editor.TabIndex = 0;
             // 
             // tlp_Editor
@@ -491,9 +520,9 @@ namespace AtlusMSGEditor
             // 
             // splitContainer_Log.Panel2
             // 
-            this.splitContainer_Log.Panel2.Controls.Add(this.rtb_Log);
+            this.splitContainer_Log.Panel2.Controls.Add(this.tlp_Progress);
             this.splitContainer_Log.Size = new System.Drawing.Size(1264, 534);
-            this.splitContainer_Log.SplitterDistance = 437;
+            this.splitContainer_Log.SplitterDistance = 435;
             this.splitContainer_Log.TabIndex = 4;
             // 
             // splitContainer_Directories
@@ -509,7 +538,7 @@ namespace AtlusMSGEditor
             // splitContainer_Directories.Panel2
             // 
             this.splitContainer_Directories.Panel2.Controls.Add(this.splitContainer_Files);
-            this.splitContainer_Directories.Size = new System.Drawing.Size(1264, 437);
+            this.splitContainer_Directories.Size = new System.Drawing.Size(1264, 435);
             this.splitContainer_Directories.SplitterDistance = 444;
             this.splitContainer_Directories.TabIndex = 0;
             // 
@@ -519,7 +548,7 @@ namespace AtlusMSGEditor
             this.groupBox_Directories.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox_Directories.Location = new System.Drawing.Point(0, 0);
             this.groupBox_Directories.Name = "groupBox_Directories";
-            this.groupBox_Directories.Size = new System.Drawing.Size(444, 437);
+            this.groupBox_Directories.Size = new System.Drawing.Size(444, 435);
             this.groupBox_Directories.TabIndex = 0;
             this.groupBox_Directories.TabStop = false;
             this.groupBox_Directories.Text = "Directories";
@@ -536,7 +565,7 @@ namespace AtlusMSGEditor
             this.tlp_DirsAndSearch.RowCount = 2;
             this.tlp_DirsAndSearch.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8F));
             this.tlp_DirsAndSearch.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 92F));
-            this.tlp_DirsAndSearch.Size = new System.Drawing.Size(438, 412);
+            this.tlp_DirsAndSearch.Size = new System.Drawing.Size(438, 410);
             this.tlp_DirsAndSearch.TabIndex = 0;
             // 
             // listBox_Directories
@@ -546,7 +575,7 @@ namespace AtlusMSGEditor
             this.listBox_Directories.ItemHeight = 20;
             this.listBox_Directories.Location = new System.Drawing.Point(3, 35);
             this.listBox_Directories.Name = "listBox_Directories";
-            this.listBox_Directories.Size = new System.Drawing.Size(432, 374);
+            this.listBox_Directories.Size = new System.Drawing.Size(432, 372);
             this.listBox_Directories.TabIndex = 4;
             this.listBox_Directories.SelectedIndexChanged += new System.EventHandler(this.ListBox_Dirs_SelectedIndexChanged);
             this.listBox_Directories.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ListBox_KeyDown);
@@ -567,11 +596,11 @@ namespace AtlusMSGEditor
             this.chk_IncludeDirsInSearch.Location = new System.Drawing.Point(3, 8);
             this.chk_IncludeDirsInSearch.Name = "chk_IncludeDirsInSearch";
             this.chk_IncludeDirsInSearch.SignStyle = MetroSet_UI.Enums.SignStyle.Sign;
-            this.chk_IncludeDirsInSearch.Size = new System.Drawing.Size(191, 16);
+            this.chk_IncludeDirsInSearch.Size = new System.Drawing.Size(266, 16);
             this.chk_IncludeDirsInSearch.Style = MetroSet_UI.Enums.Style.Light;
             this.chk_IncludeDirsInSearch.StyleManager = null;
             this.chk_IncludeDirsInSearch.TabIndex = 12;
-            this.chk_IncludeDirsInSearch.Text = "Include All in Search";
+            this.chk_IncludeDirsInSearch.Text = "Include All Directories in Search";
             this.chk_IncludeDirsInSearch.ThemeAuthor = "Narwin";
             this.chk_IncludeDirsInSearch.ThemeName = "MetroLite";
             // 
@@ -588,7 +617,7 @@ namespace AtlusMSGEditor
             // splitContainer_Files.Panel2
             // 
             this.splitContainer_Files.Panel2.Controls.Add(this.splitContainer_Main);
-            this.splitContainer_Files.Size = new System.Drawing.Size(816, 437);
+            this.splitContainer_Files.Size = new System.Drawing.Size(816, 435);
             this.splitContainer_Files.SplitterDistance = 255;
             this.splitContainer_Files.TabIndex = 5;
             // 
@@ -598,7 +627,7 @@ namespace AtlusMSGEditor
             this.groupBox_Files.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox_Files.Location = new System.Drawing.Point(0, 0);
             this.groupBox_Files.Name = "groupBox_Files";
-            this.groupBox_Files.Size = new System.Drawing.Size(255, 437);
+            this.groupBox_Files.Size = new System.Drawing.Size(255, 435);
             this.groupBox_Files.TabIndex = 1;
             this.groupBox_Files.TabStop = false;
             this.groupBox_Files.Text = "Files";
@@ -615,7 +644,7 @@ namespace AtlusMSGEditor
             this.tlp_FilesAndSearch.RowCount = 2;
             this.tlp_FilesAndSearch.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8F));
             this.tlp_FilesAndSearch.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 92F));
-            this.tlp_FilesAndSearch.Size = new System.Drawing.Size(249, 412);
+            this.tlp_FilesAndSearch.Size = new System.Drawing.Size(249, 410);
             this.tlp_FilesAndSearch.TabIndex = 0;
             // 
             // chk_IncludeFilesInSearch
@@ -634,11 +663,11 @@ namespace AtlusMSGEditor
             this.chk_IncludeFilesInSearch.Location = new System.Drawing.Point(3, 8);
             this.chk_IncludeFilesInSearch.Name = "chk_IncludeFilesInSearch";
             this.chk_IncludeFilesInSearch.SignStyle = MetroSet_UI.Enums.SignStyle.Sign;
-            this.chk_IncludeFilesInSearch.Size = new System.Drawing.Size(186, 16);
+            this.chk_IncludeFilesInSearch.Size = new System.Drawing.Size(223, 16);
             this.chk_IncludeFilesInSearch.Style = MetroSet_UI.Enums.Style.Light;
             this.chk_IncludeFilesInSearch.StyleManager = null;
             this.chk_IncludeFilesInSearch.TabIndex = 11;
-            this.chk_IncludeFilesInSearch.Text = "Include All in Search";
+            this.chk_IncludeFilesInSearch.Text = "Include All Files in Search";
             this.chk_IncludeFilesInSearch.ThemeAuthor = "Narwin";
             this.chk_IncludeFilesInSearch.ThemeName = "MetroLite";
             // 
@@ -649,28 +678,43 @@ namespace AtlusMSGEditor
             this.listBox_Files.ItemHeight = 20;
             this.listBox_Files.Location = new System.Drawing.Point(3, 35);
             this.listBox_Files.Name = "listBox_Files";
-            this.listBox_Files.Size = new System.Drawing.Size(243, 374);
+            this.listBox_Files.Size = new System.Drawing.Size(243, 372);
             this.listBox_Files.TabIndex = 2;
             this.listBox_Files.SelectedIndexChanged += new System.EventHandler(this.ListBox_Files_SelectedIndexChanged);
             this.listBox_Files.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ListBox_KeyDown);
             // 
+            // tlp_Progress
+            // 
+            this.tlp_Progress.ColumnCount = 1;
+            this.tlp_Progress.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlp_Progress.Controls.Add(this.rtb_Log, 0, 1);
+            this.tlp_Progress.Controls.Add(this.progressBar1, 0, 0);
+            this.tlp_Progress.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlp_Progress.Location = new System.Drawing.Point(0, 0);
+            this.tlp_Progress.Name = "tlp_Progress";
+            this.tlp_Progress.RowCount = 2;
+            this.tlp_Progress.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15F));
+            this.tlp_Progress.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 85F));
+            this.tlp_Progress.Size = new System.Drawing.Size(1264, 95);
+            this.tlp_Progress.TabIndex = 0;
+            // 
             // rtb_Log
             // 
             this.rtb_Log.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.rtb_Log.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtb_Log.Location = new System.Drawing.Point(0, 0);
+            this.rtb_Log.Location = new System.Drawing.Point(3, 17);
             this.rtb_Log.Name = "rtb_Log";
             this.rtb_Log.ReadOnly = true;
-            this.rtb_Log.Size = new System.Drawing.Size(1264, 93);
-            this.rtb_Log.TabIndex = 0;
+            this.rtb_Log.Size = new System.Drawing.Size(1258, 75);
+            this.rtb_Log.TabIndex = 1;
             this.rtb_Log.Text = "";
             // 
-            // showAutoReplacedFilesToolStripMenuItem
+            // progressBar1
             // 
-            this.showAutoReplacedFilesToolStripMenuItem.CheckOnClick = true;
-            this.showAutoReplacedFilesToolStripMenuItem.Name = "showAutoReplacedFilesToolStripMenuItem";
-            this.showAutoReplacedFilesToolStripMenuItem.Size = new System.Drawing.Size(265, 26);
-            this.showAutoReplacedFilesToolStripMenuItem.Text = "Show Auto-Replaced Files";
+            this.progressBar1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.progressBar1.Location = new System.Drawing.Point(3, 3);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(1258, 8);
+            this.progressBar1.TabIndex = 2;
             // 
             // MainForm
             // 
@@ -726,6 +770,7 @@ namespace AtlusMSGEditor
             this.splitContainer_Files.ResumeLayout(false);
             this.groupBox_Files.ResumeLayout(false);
             this.tlp_FilesAndSearch.ResumeLayout(false);
+            this.tlp_Progress.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -754,7 +799,6 @@ namespace AtlusMSGEditor
         private MetroSetCheckBox chk_ShowOldMsgText;
         private SplitContainer splitContainer_Log;
         private SplitContainer splitContainer_Directories;
-        private RichTextBox rtb_Log;
         private SplitContainer splitContainer_Files;
         private ToolStripMenuItem exportTXTsToolStripMenuItem;
         private ToolStripMenuItem deleteExistingDumpDirToolStripMenuItem;
@@ -779,5 +823,10 @@ namespace AtlusMSGEditor
         private ToolStripMenuItem createJSONDumpToolStripMenuItem;
         private ToolStripMenuItem refreshToolStripMenuItem;
         private ToolStripMenuItem showAutoReplacedFilesToolStripMenuItem;
+        private ToolStripMenuItem exportAutoReplacedFilesToolStripMenuItem;
+        private ToolStripMenuItem setInputPathToolStripMenuItem;
+        private TableLayoutPanel tlp_Progress;
+        private RichTextBox rtb_Log;
+        private ProgressBar progressBar1;
     }
 }

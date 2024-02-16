@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShrineFox.IO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ namespace AtlusMSGEditor
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            SyncUIHelper.Initialize();
             Application.Run(new MainForm());
         }
     }
