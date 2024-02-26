@@ -61,6 +61,8 @@ namespace AtlusMSGEditor
             this.txt_Search = new System.Windows.Forms.TextBox();
             this.listBox_Msgs = new System.Windows.Forms.ListBox();
             this.panel_Editor = new System.Windows.Forms.Panel();
+            this.tabControl_EditorType = new MetroSet_UI.Controls.MetroSetTabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tlp_Editor = new System.Windows.Forms.TableLayoutPanel();
             this.lbl_MsgName = new System.Windows.Forms.Label();
             this.txt_MsgName = new System.Windows.Forms.TextBox();
@@ -71,6 +73,7 @@ namespace AtlusMSGEditor
             this.lbl_Speaker = new System.Windows.Forms.Label();
             this.txt_Speaker = new System.Windows.Forms.TextBox();
             this.comboBox_MsgType = new System.Windows.Forms.ComboBox();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
             this.splitContainer_Log = new System.Windows.Forms.SplitContainer();
             this.splitContainer_Directories = new System.Windows.Forms.SplitContainer();
             this.groupBox_Directories = new System.Windows.Forms.GroupBox();
@@ -85,6 +88,8 @@ namespace AtlusMSGEditor
             this.tlp_Progress = new System.Windows.Forms.TableLayoutPanel();
             this.rtb_Log = new System.Windows.Forms.RichTextBox();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.showDecompiledFLOWToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.txt_Flowscript = new System.Windows.Forms.TextBox();
             this.menuStrip_Main.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
@@ -93,7 +98,10 @@ namespace AtlusMSGEditor
             this.groupBox_Msgs.SuspendLayout();
             this.tlp_ListAndSearch.SuspendLayout();
             this.panel_Editor.SuspendLayout();
+            this.tabControl_EditorType.SuspendLayout();
+            this.tabPage1.SuspendLayout();
             this.tlp_Editor.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Log)).BeginInit();
             this.splitContainer_Log.Panel1.SuspendLayout();
             this.splitContainer_Log.Panel2.SuspendLayout();
@@ -149,49 +157,49 @@ namespace AtlusMSGEditor
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(222, 26);
             this.saveToolStripMenuItem.Text = "Save Project";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.Save_Click);
             // 
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(222, 26);
             this.loadToolStripMenuItem.Text = "Load Project";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.Load_Click);
             // 
             // importToolStripMenuItem
             // 
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(222, 26);
             this.importToolStripMenuItem.Text = "Import .BMDs";
             this.importToolStripMenuItem.Click += new System.EventHandler(this.ImportBMDs_Click);
             // 
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(222, 26);
             this.exportToolStripMenuItem.Text = "Export .BMDs";
             this.exportToolStripMenuItem.Click += new System.EventHandler(this.ExportBMDs_Click);
             // 
             // exportTXTsToolStripMenuItem
             // 
             this.exportTXTsToolStripMenuItem.Name = "exportTXTsToolStripMenuItem";
-            this.exportTXTsToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.exportTXTsToolStripMenuItem.Size = new System.Drawing.Size(222, 26);
             this.exportTXTsToolStripMenuItem.Text = "Create .TXT Dump";
             this.exportTXTsToolStripMenuItem.Click += new System.EventHandler(this.ExportTXTs_Click);
             // 
             // createJSONDumpToolStripMenuItem
             // 
             this.createJSONDumpToolStripMenuItem.Name = "createJSONDumpToolStripMenuItem";
-            this.createJSONDumpToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.createJSONDumpToolStripMenuItem.Size = new System.Drawing.Size(222, 26);
             this.createJSONDumpToolStripMenuItem.Text = "Create .JSON Dump";
             this.createJSONDumpToolStripMenuItem.Click += new System.EventHandler(this.JsonDump_Click);
             // 
             // setInputPathToolStripMenuItem
             // 
             this.setInputPathToolStripMenuItem.Name = "setInputPathToolStripMenuItem";
-            this.setInputPathToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.setInputPathToolStripMenuItem.Size = new System.Drawing.Size(222, 26);
             this.setInputPathToolStripMenuItem.Text = "Set Input Path...";
             this.setInputPathToolStripMenuItem.Click += new System.EventHandler(this.SetInputPath_Click);
             // 
@@ -204,6 +212,7 @@ namespace AtlusMSGEditor
             this.deleteExistingOutputDirToolStripMenuItem,
             this.showAutoReplacedFilesToolStripMenuItem,
             this.exportAutoReplacedFilesToolStripMenuItem,
+            this.showDecompiledFLOWToolStripMenuItem,
             this.comboBox_Encoding});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(75, 24);
@@ -362,12 +371,46 @@ namespace AtlusMSGEditor
             // 
             this.panel_Editor.AutoSize = true;
             this.panel_Editor.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.panel_Editor.Controls.Add(this.tlp_Editor);
+            this.panel_Editor.Controls.Add(this.tabControl_EditorType);
             this.panel_Editor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel_Editor.Location = new System.Drawing.Point(0, 0);
             this.panel_Editor.Name = "panel_Editor";
             this.panel_Editor.Size = new System.Drawing.Size(393, 435);
             this.panel_Editor.TabIndex = 0;
+            // 
+            // tabControl_EditorType
+            // 
+            this.tabControl_EditorType.AnimateEasingType = MetroSet_UI.Enums.EasingType.CubeOut;
+            this.tabControl_EditorType.AnimateTime = 200;
+            this.tabControl_EditorType.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.tabControl_EditorType.Controls.Add(this.tabPage1);
+            this.tabControl_EditorType.Controls.Add(this.tabPage2);
+            this.tabControl_EditorType.Cursor = System.Windows.Forms.Cursors.Default;
+            this.tabControl_EditorType.IsDerivedStyle = true;
+            this.tabControl_EditorType.ItemSize = new System.Drawing.Size(100, 38);
+            this.tabControl_EditorType.Location = new System.Drawing.Point(3, 3);
+            this.tabControl_EditorType.Name = "tabControl_EditorType";
+            this.tabControl_EditorType.SelectedIndex = 0;
+            this.tabControl_EditorType.SelectedTextColor = System.Drawing.Color.White;
+            this.tabControl_EditorType.Size = new System.Drawing.Size(387, 429);
+            this.tabControl_EditorType.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
+            this.tabControl_EditorType.Speed = 100;
+            this.tabControl_EditorType.Style = MetroSet_UI.Enums.Style.Dark;
+            this.tabControl_EditorType.StyleManager = null;
+            this.tabControl_EditorType.TabIndex = 0;
+            this.tabControl_EditorType.ThemeAuthor = "Narwin";
+            this.tabControl_EditorType.ThemeName = "MetroDark";
+            this.tabControl_EditorType.UnselectedTextColor = System.Drawing.Color.Gray;
+            this.tabControl_EditorType.UseAnimation = false;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.tlp_Editor);
+            this.tabPage1.Location = new System.Drawing.Point(4, 42);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Size = new System.Drawing.Size(379, 383);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "tabPage_MSG";
             // 
             // tlp_Editor
             // 
@@ -393,14 +436,14 @@ namespace AtlusMSGEditor
             this.tlp_Editor.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tlp_Editor.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 220F));
             this.tlp_Editor.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tlp_Editor.Size = new System.Drawing.Size(393, 464);
-            this.tlp_Editor.TabIndex = 0;
+            this.tlp_Editor.Size = new System.Drawing.Size(379, 464);
+            this.tlp_Editor.TabIndex = 1;
             // 
             // lbl_MsgName
             // 
             this.lbl_MsgName.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lbl_MsgName.AutoSize = true;
-            this.lbl_MsgName.Location = new System.Drawing.Point(37, 0);
+            this.lbl_MsgName.Location = new System.Drawing.Point(33, 0);
             this.lbl_MsgName.Name = "lbl_MsgName";
             this.lbl_MsgName.Size = new System.Drawing.Size(58, 40);
             this.lbl_MsgName.TabIndex = 2;
@@ -411,10 +454,10 @@ namespace AtlusMSGEditor
             // 
             this.txt_MsgName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txt_MsgName.Enabled = false;
-            this.txt_MsgName.Location = new System.Drawing.Point(101, 7);
+            this.txt_MsgName.Location = new System.Drawing.Point(97, 7);
             this.txt_MsgName.Name = "txt_MsgName";
             this.txt_MsgName.ReadOnly = true;
-            this.txt_MsgName.Size = new System.Drawing.Size(289, 26);
+            this.txt_MsgName.Size = new System.Drawing.Size(279, 26);
             this.txt_MsgName.TabIndex = 6;
             // 
             // chk_ShowOldMsgText
@@ -429,7 +472,7 @@ namespace AtlusMSGEditor
             this.chk_ShowOldMsgText.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(205)))), ((int)(((byte)(205)))));
             this.chk_ShowOldMsgText.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.chk_ShowOldMsgText.IsDerivedStyle = true;
-            this.chk_ShowOldMsgText.Location = new System.Drawing.Point(101, 343);
+            this.chk_ShowOldMsgText.Location = new System.Drawing.Point(97, 343);
             this.chk_ShowOldMsgText.Name = "chk_ShowOldMsgText";
             this.chk_ShowOldMsgText.SignStyle = MetroSet_UI.Enums.SignStyle.Sign;
             this.chk_ShowOldMsgText.Size = new System.Drawing.Size(213, 16);
@@ -445,7 +488,7 @@ namespace AtlusMSGEditor
             // 
             this.lbl_MsgTxt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lbl_MsgTxt.AutoSize = true;
-            this.lbl_MsgTxt.Location = new System.Drawing.Point(12, 120);
+            this.lbl_MsgTxt.Location = new System.Drawing.Point(8, 120);
             this.lbl_MsgTxt.Name = "lbl_MsgTxt";
             this.lbl_MsgTxt.Size = new System.Drawing.Size(83, 20);
             this.lbl_MsgTxt.TabIndex = 5;
@@ -455,10 +498,10 @@ namespace AtlusMSGEditor
             // txt_MsgTxt
             // 
             this.txt_MsgTxt.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txt_MsgTxt.Location = new System.Drawing.Point(101, 123);
+            this.txt_MsgTxt.Location = new System.Drawing.Point(97, 123);
             this.txt_MsgTxt.Multiline = true;
             this.txt_MsgTxt.Name = "txt_MsgTxt";
-            this.txt_MsgTxt.Size = new System.Drawing.Size(289, 214);
+            this.txt_MsgTxt.Size = new System.Drawing.Size(279, 214);
             this.txt_MsgTxt.TabIndex = 9;
             this.txt_MsgTxt.TextChanged += new System.EventHandler(this.Desc_Changed);
             // 
@@ -466,7 +509,7 @@ namespace AtlusMSGEditor
             // 
             this.lbl_MsgType.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lbl_MsgType.AutoSize = true;
-            this.lbl_MsgType.Location = new System.Drawing.Point(45, 50);
+            this.lbl_MsgType.Location = new System.Drawing.Point(41, 50);
             this.lbl_MsgType.Name = "lbl_MsgType";
             this.lbl_MsgType.Size = new System.Drawing.Size(50, 20);
             this.lbl_MsgType.TabIndex = 11;
@@ -477,7 +520,7 @@ namespace AtlusMSGEditor
             // 
             this.lbl_Speaker.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lbl_Speaker.AutoSize = true;
-            this.lbl_Speaker.Location = new System.Drawing.Point(20, 90);
+            this.lbl_Speaker.Location = new System.Drawing.Point(16, 90);
             this.lbl_Speaker.Name = "lbl_Speaker";
             this.lbl_Speaker.Size = new System.Drawing.Size(75, 20);
             this.lbl_Speaker.TabIndex = 12;
@@ -487,9 +530,9 @@ namespace AtlusMSGEditor
             // txt_Speaker
             // 
             this.txt_Speaker.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txt_Speaker.Location = new System.Drawing.Point(101, 87);
+            this.txt_Speaker.Location = new System.Drawing.Point(97, 87);
             this.txt_Speaker.Name = "txt_Speaker";
-            this.txt_Speaker.Size = new System.Drawing.Size(289, 26);
+            this.txt_Speaker.Size = new System.Drawing.Size(279, 26);
             this.txt_Speaker.TabIndex = 13;
             this.txt_Speaker.TextChanged += new System.EventHandler(this.Desc_Changed);
             // 
@@ -502,10 +545,19 @@ namespace AtlusMSGEditor
             this.comboBox_MsgType.Items.AddRange(new object[] {
             "Dialog",
             "Selection"});
-            this.comboBox_MsgType.Location = new System.Drawing.Point(101, 48);
+            this.comboBox_MsgType.Location = new System.Drawing.Point(97, 48);
             this.comboBox_MsgType.Name = "comboBox_MsgType";
-            this.comboBox_MsgType.Size = new System.Drawing.Size(289, 28);
+            this.comboBox_MsgType.Size = new System.Drawing.Size(279, 28);
             this.comboBox_MsgType.TabIndex = 14;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.txt_Flowscript);
+            this.tabPage2.Location = new System.Drawing.Point(4, 42);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Size = new System.Drawing.Size(379, 383);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "tabPage_FLOW";
             // 
             // splitContainer_Log
             // 
@@ -716,6 +768,22 @@ namespace AtlusMSGEditor
             this.progressBar1.Size = new System.Drawing.Size(1258, 8);
             this.progressBar1.TabIndex = 2;
             // 
+            // showDecompiledFLOWToolStripMenuItem
+            // 
+            this.showDecompiledFLOWToolStripMenuItem.CheckOnClick = true;
+            this.showDecompiledFLOWToolStripMenuItem.Name = "showDecompiledFLOWToolStripMenuItem";
+            this.showDecompiledFLOWToolStripMenuItem.Size = new System.Drawing.Size(272, 26);
+            this.showDecompiledFLOWToolStripMenuItem.Text = "Show Decompiled .FLOW";
+            // 
+            // txt_Flowscript
+            // 
+            this.txt_Flowscript.Dock = System.Windows.Forms.DockStyle.Top;
+            this.txt_Flowscript.Location = new System.Drawing.Point(0, 0);
+            this.txt_Flowscript.Multiline = true;
+            this.txt_Flowscript.Name = "txt_Flowscript";
+            this.txt_Flowscript.Size = new System.Drawing.Size(379, 458);
+            this.txt_Flowscript.TabIndex = 10;
+            // 
             // MainForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -752,8 +820,12 @@ namespace AtlusMSGEditor
             this.tlp_ListAndSearch.ResumeLayout(false);
             this.tlp_ListAndSearch.PerformLayout();
             this.panel_Editor.ResumeLayout(false);
+            this.tabControl_EditorType.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
             this.tlp_Editor.ResumeLayout(false);
             this.tlp_Editor.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
             this.splitContainer_Log.Panel1.ResumeLayout(false);
             this.splitContainer_Log.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Log)).EndInit();
@@ -784,11 +856,6 @@ namespace AtlusMSGEditor
         private ColumnHeader columnHeader;
         private SplitContainer splitContainer_Main;
         private Panel panel_Editor;
-        private TableLayoutPanel tlp_Editor;
-        private Label lbl_MsgName;
-        private TextBox txt_MsgTxt;
-        private Label lbl_MsgTxt;
-        private TextBox txt_MsgName;
         private ToolStripMenuItem toggleThemeToolStripMenuItem;
         private ToolStripMenuItem exportToolStripMenuItem;
         private ToolStripMenuItem importToolStripMenuItem;
@@ -796,16 +863,11 @@ namespace AtlusMSGEditor
         private ToolStripMenuItem outputBMDToolStripMenuItem;
         private ToolStripComboBox comboBox_Encoding;
         private ToolStripMenuItem deleteOutputMSGToolStripMenuItem;
-        private MetroSetCheckBox chk_ShowOldMsgText;
         private SplitContainer splitContainer_Log;
         private SplitContainer splitContainer_Directories;
         private SplitContainer splitContainer_Files;
         private ToolStripMenuItem exportTXTsToolStripMenuItem;
         private ToolStripMenuItem deleteExistingDumpDirToolStripMenuItem;
-        private Label lbl_MsgType;
-        private Label lbl_Speaker;
-        private TextBox txt_Speaker;
-        private ComboBox comboBox_MsgType;
         private ToolStripMenuItem autoReplaceToolStripMenuItem;
         private TableLayoutPanel tlp_FilesAndSearch;
         private MetroSetCheckBox chk_IncludeFilesInSearch;
@@ -828,5 +890,20 @@ namespace AtlusMSGEditor
         private TableLayoutPanel tlp_Progress;
         private RichTextBox rtb_Log;
         private ProgressBar progressBar1;
+        private MetroSetTabControl tabControl_EditorType;
+        private TabPage tabPage1;
+        private TableLayoutPanel tlp_Editor;
+        private Label lbl_MsgName;
+        private TextBox txt_MsgName;
+        private MetroSetCheckBox chk_ShowOldMsgText;
+        private Label lbl_MsgTxt;
+        private TextBox txt_MsgTxt;
+        private Label lbl_MsgType;
+        private Label lbl_Speaker;
+        private TextBox txt_Speaker;
+        private ComboBox comboBox_MsgType;
+        private TabPage tabPage2;
+        private ToolStripMenuItem showDecompiledFLOWToolStripMenuItem;
+        private TextBox txt_Flowscript;
     }
 }

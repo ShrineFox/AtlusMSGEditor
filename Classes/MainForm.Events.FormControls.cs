@@ -155,6 +155,23 @@ namespace AtlusMSGEditor
                 txt_Speaker.Enabled = true;
                 txt_MsgName.Enabled = true;
             }
+
+            if (listBox_Files.SelectedItem != null && showDecompiledFLOWToolStripMenuItem.Checked && Directory.Exists(dumpInputPath))
+            {
+                txt_Flowscript.Clear();
+                txt_Flowscript.Enabled = true;
+
+                MsgFile msgFile = (MsgFile)listBox_Files.SelectedItem;
+                string bfPath = Path.Combine(dumpInputPath, msgFile.Path.Replace(dumpOutPath, "").TrimStart('\\'));
+                string flowTxt = GetFlowTxt(ShrineFox.IO.FileSys.GetExtensionlessPath(bfPath));
+                if (!string.IsNullOrEmpty(flowTxt))
+                    txt_Flowscript.Text = flowTxt;
+            }
+            else
+            {
+                txt_Flowscript.Clear();
+                txt_Flowscript.Enabled = false;
+            }
         }
 
         private void ListBoxMsgs_Format(object sender, ListControlConvertEventArgs e)

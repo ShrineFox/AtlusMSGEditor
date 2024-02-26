@@ -18,6 +18,7 @@ using System.Windows.Forms;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using static AtlusMSGEditor.MainForm;
+using AtlusScriptLibrary.FlowScriptLanguage.Decompiler;
 
 namespace AtlusMSGEditor
 {
@@ -26,8 +27,7 @@ namespace AtlusMSGEditor
         private List<Message> GetMessagesFromDump(string msgPath)
         {
             string[] lines = File.ReadAllText(msgPath)
-                        .Replace("[s]", "")
-                        .Replace("[f 0 5 65278][f 2 1]", "")
+                        .Replace("[f 0 5 65278][f 2 1]", "[s]")
                         .Split('\n');
 
             List<Message> msgs = new List<Message>();
@@ -390,6 +390,25 @@ namespace AtlusMSGEditor
                 Directory.CreateDirectory(Path.GetDirectoryName(outBfPath));
                 flowScript.ToFile(outBfPath);
             }
+        }
+
+        public string GetFlowTxt(string bfPath)
+        {
+            if (!File.Exists(bfPath) || Path.GetExtension(bfPath).ToLower() != ".bf")
+                return null;
+
+            FlowScript flowScript = FlowScript.FromFile(bfPath, null);
+            FlowScriptDecompiler decompiler = new FlowScriptDecompiler() 
+                { DecompileMessageScript = false, Library = LibraryLookup.GetLibrary("P5R"), SumBits = true };
+
+            string tempPath = ".\\temp.flow";
+            InitializeScriptCompiler(bfPath, tempPath);
+            if (File.Exists(tempPath))
+                File.Delete(tempPath);
+            if (decompiler.TryDecompile(flowScript, tempPath))
+                return File.ReadAllText(tempPath);
+            else
+                return null;
         }
 
         private void CompileMSGToBMD(string msgFile, string outPath)
