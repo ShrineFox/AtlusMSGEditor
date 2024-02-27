@@ -90,12 +90,35 @@ namespace AtlusMSGEditor
                 txt_MsgTxt.Enabled = true;
         }
 
+        private void UpdateFlowControls()
+        {
+            if (listBox_Files.SelectedItem != null
+                && showDecompiledFLOWToolStripMenuItem.Checked && Directory.Exists(dumpInputPath))
+            {
+                txt_Flowscript.Clear();
+                txt_Flowscript.Enabled = true;
+
+                MsgFile msgFile = (MsgFile)listBox_Files.SelectedItem;
+                string bfPath = Path.Combine(dumpInputPath, msgFile.Path.Replace(dumpOutPath, "").TrimStart('\\'));
+                string flowTxt = GetFlowTxt(ShrineFox.IO.FileSys.GetExtensionlessPath(bfPath));
+                if (!string.IsNullOrEmpty(flowTxt))
+                    txt_Flowscript.Text = flowTxt;
+            }
+            else
+            {
+                txt_Flowscript.Clear();
+                txt_Flowscript.Enabled = false;
+            }
+        }
+
         private void ListBox_Files_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (listBox_Files.SelectedIndex != -1 || listBox_Msgs.DataSource == null)
                 SetMsgsListBoxDataSource();
             else
                 UpdateMsgsListBoxFormatting();
+
+            UpdateFlowControls();
         }
 
         private void SetMsgsListBoxDataSource()
@@ -103,6 +126,7 @@ namespace AtlusMSGEditor
             var selectedMsgFile = (MsgFile)listBox_Files.SelectedItem;
             listBox_Msgs.DataSource = null;
             listBox_Msgs.Items.Clear();
+
             if (selectedMsgFile == null)
                 return;
 
@@ -126,6 +150,11 @@ namespace AtlusMSGEditor
             if (listBox_Msgs.SelectedItem == null)
                 return;
 
+            UpdateMsgControls();
+        }
+
+        private void UpdateMsgControls()
+        {
             var msg = (Message)listBox_Msgs.SelectedItem;
 
             txt_Speaker.Enabled = false;
@@ -154,23 +183,6 @@ namespace AtlusMSGEditor
                 }
                 txt_Speaker.Enabled = true;
                 txt_MsgName.Enabled = true;
-            }
-
-            if (listBox_Files.SelectedItem != null && showDecompiledFLOWToolStripMenuItem.Checked && Directory.Exists(dumpInputPath))
-            {
-                txt_Flowscript.Clear();
-                txt_Flowscript.Enabled = true;
-
-                MsgFile msgFile = (MsgFile)listBox_Files.SelectedItem;
-                string bfPath = Path.Combine(dumpInputPath, msgFile.Path.Replace(dumpOutPath, "").TrimStart('\\'));
-                string flowTxt = GetFlowTxt(ShrineFox.IO.FileSys.GetExtensionlessPath(bfPath));
-                if (!string.IsNullOrEmpty(flowTxt))
-                    txt_Flowscript.Text = flowTxt;
-            }
-            else
-            {
-                txt_Flowscript.Clear();
-                txt_Flowscript.Enabled = false;
             }
         }
 
