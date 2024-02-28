@@ -18,11 +18,6 @@ namespace AtlusMSGEditor
 {
     public partial class MainForm : MetroSetForm
     {
-        public Encoding userEncoding = AtlusEncoding.Persona5RoyalEFIGS;
-        public string dumpInputPath = "";
-        public string dumpOutPath = ".\\Dump";
-        public string exportPath = ".\\Output";
-        public string defaultJson = ".\\Dependencies\\msgDirs.json";
         public int selectedDir = 0;
         public int selectedFile = 0;
         public int selectedMsg = 0;
@@ -32,6 +27,8 @@ namespace AtlusMSGEditor
             InitializeComponent();
 
             // Setup form appearance
+            LoadFormSettings();
+
             ApplyTheme();
             SetLogging();
             MenuStripHelper.SetMenuStripIcons(MenuStripHelper.GetMenuStripIconPairs("Icons.txt"), this);
@@ -39,8 +36,8 @@ namespace AtlusMSGEditor
             // Set default encoding to first available value
             comboBox_Encoding.SelectedIndex = 0;
             // Load default JSON dump if it exists
-            if (File.Exists(defaultJson))
-                MsgDirs = JsonConvert.DeserializeObject<List<MsgDir>>(File.ReadAllText(defaultJson));
+            if (File.Exists(formSettings.DefaultJSON))
+                MsgDirs = JsonConvert.DeserializeObject<List<MsgDir>>(File.ReadAllText(formSettings.DefaultJSON));
 
             // Apply loaded data to editor controls
             SetDirectoryListBoxDataSource();
@@ -105,6 +102,11 @@ namespace AtlusMSGEditor
             public string Speaker { get; set; } = "";
             public bool IsSelection { get; set; } = false;
             public Change Change { get; set; } = null;
+        }
+
+        private void MenuStrip_CheckedChanged(object sender, EventArgs e)
+        {
+            SaveFormSettings();
         }
     }
 }

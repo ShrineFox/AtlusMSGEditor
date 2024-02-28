@@ -21,7 +21,8 @@ namespace AtlusMSGEditor
 {
     public partial class MainForm : MetroSetForm
     {
-        private void Save_Click(object sender, EventArgs e)
+
+        private void SaveProject_Click(object sender, EventArgs e)
         {
             SaveProject();
         }
@@ -101,6 +102,27 @@ namespace AtlusMSGEditor
             }).Start();
         }
 
+        private void SetInputPath_Click(object sender, EventArgs e)
+        {
+            var path = WinFormsDialogs.SelectFolder("Choose Dir Containing CPK Dump Folders");
+            if (!String.IsNullOrEmpty(path))
+            {
+                formSettings.DumpInputPath = path;
+                SaveFormSettings();
+            }
+        }
+
+
+        private void SetOutputPath_Click(object sender, EventArgs e)
+        {
+            var path = WinFormsDialogs.SelectFolder("Choose Mod Folder to Export To");
+            if (!String.IsNullOrEmpty(path))
+            {
+                formSettings.ExportPath = path;
+                SaveFormSettings();
+            }
+        }
+
         private void AutoReplace_Click(object sender, EventArgs e)
         {
             OpenAutoReplaceForm();
@@ -120,11 +142,12 @@ namespace AtlusMSGEditor
         private void Encoding_Changed(object sender, EventArgs e)
         {
             ApplyNewEncoding();
+            SaveFormSettings();
         }
 
         private void ApplyNewEncoding()
         {
-            userEncoding = AtlusEncoding.GetByName(comboBox_Encoding.SelectedItem.ToString());
+            formSettings.UserEncoding = comboBox_Encoding.SelectedItem.ToString();
         }
 
         private void ToggleTheme_Click(object sender, EventArgs e)
@@ -135,14 +158,19 @@ namespace AtlusMSGEditor
 
         private void ToggleTheme()
         {
-            if (Theme.ThemeStyle == MetroSet_UI.Enums.Style.Light)
-                Theme.ThemeStyle = MetroSet_UI.Enums.Style.Dark;
+            if (formSettings.Theme == MetroSet_UI.Enums.Style.Light)
+                formSettings.Theme = MetroSet_UI.Enums.Style.Dark;
             else
-                Theme.ThemeStyle = MetroSet_UI.Enums.Style.Light;
+                formSettings.Theme = MetroSet_UI.Enums.Style.Light;
+
+            SaveFormSettings();
         }
 
         private void ApplyTheme()
         {
+            this.Style = formSettings.Theme;
+            Theme.ThemeStyle = this.Style;
+
             Theme.ApplyToForm(this);
             //Theme.SetMenuRenderer(ContextMenuStrip_RightClick);
             //Theme.RecursivelySetColors(ContextMenuStrip_RightClick);
@@ -151,13 +179,6 @@ namespace AtlusMSGEditor
         private void Refresh_Click(object sender, EventArgs e)
         {
             RefreshForm();
-        }
-
-        private void SetInputPath_Click(object sender, EventArgs e)
-        {
-            var path = WinFormsDialogs.SelectFolder("Choose Dir Containing CPK Dump Folders");
-            if (!String.IsNullOrEmpty(path))
-                dumpInputPath = path;
         }
 
         private void SetProgress(int percent)

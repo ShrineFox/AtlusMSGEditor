@@ -19,6 +19,7 @@ using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using static AtlusMSGEditor.MainForm;
 using AtlusScriptLibrary.FlowScriptLanguage.Decompiler;
+using AtlusScriptLibrary.Common.Text.Encodings;
 
 namespace AtlusMSGEditor
 {
@@ -70,7 +71,7 @@ namespace AtlusMSGEditor
         private void LoadMsgsFromDumpDir()
         {
             MsgDirs = new List<MsgDir>();
-            foreach (var dir in Directory.GetDirectories(dumpOutPath, "*", SearchOption.AllDirectories))
+            foreach (var dir in Directory.GetDirectories(formSettings.DumpOutputPath, "*", SearchOption.AllDirectories))
             {
                 MsgDir msgDir = new MsgDir() { Path = dir };
 
@@ -89,40 +90,40 @@ namespace AtlusMSGEditor
 
         private void CombineToTxt(string directory, string extension)
         {
-            string txtPath = Path.Combine(exportPath, extension.Replace(".", "") + "Dump.txt");
-            Directory.CreateDirectory(exportPath);
+            string txtPath = Path.Combine(formSettings.ExportPath, extension.Replace(".", "") + "Dump.txt");
+            Directory.CreateDirectory(formSettings.ExportPath);
             File.CreateText(txtPath).Close();
 
             foreach (var file in Directory.GetFiles(directory, $"*{extension}", SearchOption.AllDirectories))
             {
                 File.AppendAllText(txtPath,
-                    $"// {FileSys.GetExtensionlessPath(file.Replace(dumpOutPath, "."))}" +
+                    $"// {FileSys.GetExtensionlessPath(file.Replace(formSettings.DumpOutputPath, "."))}" +
                     $"\n{File.ReadAllText(file)}\n");
             }
         }
 
         private void CreateTXTDump()
         {
-            if (Directory.Exists(dumpOutPath))
+            if (Directory.Exists(formSettings.DumpOutputPath))
             {
                 // Combine .MSG and .FLOW files into single .txt files
-                Output.Log($"Combining .MSGs in \"{dumpOutPath}\"...");
-                CombineToTxt(dumpOutPath, ".msg");
+                Output.Log($"Combining .MSGs in \"{formSettings.DumpOutputPath}\"...");
+                CombineToTxt(formSettings.DumpOutputPath, ".msg");
                 Output.Log($"Done Combining .MSGs.");
-                Output.Log($"Combining .FLOWs in \"{dumpOutPath}\"...");
-                CombineToTxt(dumpOutPath, ".flow");
+                Output.Log($"Combining .FLOWs in \"{formSettings.DumpOutputPath}\"...");
+                CombineToTxt(formSettings.DumpOutputPath, ".flow");
                 Output.Log($"Done Combining .FLOWs.");
             }
         }
 
         private void CreateJSONDump()
         {
-            Directory.CreateDirectory(exportPath);
-            string outPath = Path.Combine(exportPath, "msgDirs.json");
+            Directory.CreateDirectory(formSettings.ExportPath);
+            string outPath = Path.Combine(formSettings.ExportPath, "msgDirs.json");
             string jsonText = JsonConvert.SerializeObject(MsgDirs, Newtonsoft.Json.Formatting.Indented);
             File.WriteAllText(outPath, jsonText);
             MessageBox.Show($"Saved Message Dump Json file to:\n{outPath}" +
-                $"\n\nMove it to \"{defaultJson}\" to load automatically at startup.", "Json Dump Saved");
+                $"\n\nMove it to \"{formSettings.DefaultJSON}\" to load automatically at startup.", "Json Dump Saved");
         }
 
         private void ImportBMDs()
@@ -130,26 +131,26 @@ namespace AtlusMSGEditor
             string importDir = WinFormsDialogs.SelectFolder("Choose Extracted CPKs Directory");
             if (Directory.Exists(importDir))
             {
-                dumpInputPath = importDir;
+                formSettings.DumpInputPath = importDir;
 
                 if (deleteExistingDumpDirToolStripMenuItem.Checked)
                 {
                     if (!WinFormsDialogs.ShowMessageBox("Delete Dump folder?",
-                    $"The existing \"{dumpOutPath}\" directory and its contents will be deleted." +
+                    $"The existing \"{formSettings.DumpOutputPath}\" directory and its contents will be deleted." +
                     $"\nAre you sure you want to continue?", MessageBoxButtons.YesNo))
                         return;
 
-                    if (Directory.Exists(dumpOutPath))
-                        Directory.Delete(dumpOutPath, true);
+                    if (Directory.Exists(formSettings.DumpOutputPath))
+                        Directory.Delete(formSettings.DumpOutputPath, true);
                 }
 
                 // Use AtlusScriptCompiler to decompile BF to FLOW and BMD to MSG in Dump dir
-                Output.Log($"Decompiling .BMDs from \"{dumpInputPath}\"...");
-                DecompileBMDsFromPath(dumpInputPath);
-                Output.Log($"Done Decompiling .BMDs to \"{dumpOutPath}\".");
+                Output.Log($"Decompiling .BMDs from \"{formSettings.DumpInputPath}\"...");
+                DecompileBMDsFromPath(formSettings.DumpInputPath);
+                Output.Log($"Done Decompiling .BMDs to \"{formSettings.DumpOutputPath}\".");
 
                 // Read MSG files from Dump dir to MsgDirs object
-                Output.Log($"Loading .BMD dump into memory from \"{dumpOutPath}\".");
+                Output.Log($"Loading .BMD dump into memory from \"{formSettings.DumpOutputPath}\".");
                 LoadMsgsFromDumpDir();
                 Output.Log($"Done loading .BMD dump.");
             }
@@ -183,7 +184,7 @@ namespace AtlusMSGEditor
 
         private void ProcessPAC(string pacFile)
         {
-            string extractedDir = pacFile.Replace(dumpInputPath, dumpOutPath);
+            string extractedDir = pacFile.Replace(formSettings.DumpInputPath, formSettings.DumpOutputPath);
             if (Directory.Exists(extractedDir))
                 return;
 
@@ -213,11 +214,11 @@ namespace AtlusMSGEditor
             string extension = ".msg";
             if (Path.GetExtension(scriptPath).ToLower() == ".bf")
             {
-                File.Copy(scriptPath, scriptPath.Replace(dumpInputPath, dumpOutPath));
+                File.Copy(scriptPath, scriptPath.Replace(formSettings.DumpInputPath, formSettings.DumpOutputPath));
                 extension = ".flow";
             }
 
-            string outPath = scriptPath.Replace(dumpInputPath, dumpOutPath) + extension;
+            string outPath = scriptPath.Replace(formSettings.DumpInputPath, formSettings.DumpOutputPath) + extension;
             Directory.CreateDirectory(Path.GetDirectoryName(outPath));
 
             InitializeScriptCompiler(scriptPath, outPath);
@@ -248,8 +249,8 @@ namespace AtlusMSGEditor
             AtlusScriptCompiler.Program.IsActionAssigned = false;
             AtlusScriptCompiler.Program.InputFilePath = inputPath;
             AtlusScriptCompiler.Program.OutputFilePath = outputPath;
-            AtlusScriptCompiler.Program.MessageScriptEncoding = userEncoding;
-            AtlusScriptCompiler.Program.MessageScriptTextEncodingName = userEncoding.EncodingName;
+            AtlusScriptCompiler.Program.MessageScriptEncoding = AtlusEncoding.GetByName(comboBox_Encoding.SelectedItem.ToString());
+            AtlusScriptCompiler.Program.MessageScriptTextEncodingName = AtlusEncoding.GetByName(comboBox_Encoding.SelectedItem.ToString()).EncodingName;
             if (Path.GetExtension(inputPath).ToLower() == ".bmd")
                 AtlusScriptCompiler.Program.InputFileFormat = InputFileFormat.MessageScriptBinary;
             else if (Path.GetExtension(inputPath).ToLower() == ".bf")
@@ -260,43 +261,43 @@ namespace AtlusMSGEditor
 
         private void ExportBMDs()
         {
-            if (Directory.Exists(exportPath) && deleteExistingOutputDirToolStripMenuItem.Checked)
+            if (Directory.Exists(formSettings.ExportPath) && deleteExistingOutputDirToolStripMenuItem.Checked)
             {
                 if (!WinFormsDialogs.ShowMessageBox("Delete Output folder?",
-                $"The existing \"{exportPath}\" directory and its contents will be deleted." +
+                $"The existing \"{formSettings.ExportPath}\" directory and its contents will be deleted." +
                 $"\nAre you sure you want to continue?", MessageBoxButtons.YesNo))
                     return;
 
-                if (Directory.Exists(dumpOutPath))
-                    Directory.Delete(dumpOutPath, true);
+                if (Directory.Exists(formSettings.DumpOutputPath))
+                    Directory.Delete(formSettings.DumpOutputPath, true);
             }
 
-            Directory.CreateDirectory(exportPath);
+            Directory.CreateDirectory(formSettings.ExportPath);
 
-            Output.Log($"Creating new .MSGs in \"{exportPath}\"...");
-            ExportMSGsToPath(exportPath);
+            Output.Log($"Creating new .MSGs in \"{formSettings.ExportPath}\"...");
+            ExportMSGsToPath(formSettings.ExportPath);
             Output.Log($"Done creating new .MSGs.");
 
             if (outputBMDToolStripMenuItem.Checked)
             {
-                Output.Log($"Compiling .MSGs to .BMD in \"{exportPath}\"...");
-                CompileMSGsInPath(exportPath);
+                Output.Log($"Compiling .MSGs to .BMD in \"{formSettings.ExportPath}\"...");
+                CompileMSGsInPath(formSettings.ExportPath);
                 Output.Log($"Done compiling .MSGs to .BMD.");
             }
 
             if (deleteOutputMSGToolStripMenuItem.Checked)
             {
                 Output.Log($"Deleting output .MSG files...");
-                DeleteMSGsInPath(exportPath);
+                DeleteMSGsInPath(formSettings.ExportPath);
                 Output.Log($"Done deleting output .MSG files.");
             }
 
             Output.Log($"Export complete!", ConsoleColor.Green);
         }
 
-        private void DeleteMSGsInPath(string exportPath)
+        private void DeleteMSGsInPath(string deleteMsgPath)
         {
-            foreach (var msg in Directory.GetFiles(exportPath, "*.msg", SearchOption.AllDirectories))
+            foreach (var msg in Directory.GetFiles(deleteMsgPath, "*.msg", SearchOption.AllDirectories))
                 File.Delete(msg);
         }
 
@@ -335,7 +336,7 @@ namespace AtlusMSGEditor
                         msgTxt += "]\n";
                         msgTxt += ApplyReplacements(text) + "\n\n";
                     }
-                    string outPath = file.Path.Replace(dumpOutPath, path);
+                    string outPath = file.Path.Replace(formSettings.DumpOutputPath, path);
                     Directory.CreateDirectory(Path.GetDirectoryName(outPath));
                     File.WriteAllText(outPath, msgTxt);
                 }
@@ -369,7 +370,7 @@ namespace AtlusMSGEditor
 
         private void InjectMSGIntoBF(string msgFile, string outBfPath)
         {
-            string dumpBfPath = FileSys.GetExtensionlessPath(msgFile).Replace(exportPath, dumpInputPath);
+            string dumpBfPath = FileSys.GetExtensionlessPath(msgFile).Replace(formSettings.ExportPath, formSettings.DumpInputPath);
 
             if (!File.Exists(dumpBfPath) || Path.GetExtension(dumpBfPath).ToLower() != ".bf")
                 return;
@@ -379,7 +380,7 @@ namespace AtlusMSGEditor
             using (FileStream fileStream = File.OpenRead(msgFile))
             {
                 MessageScriptCompiler messageScriptCompiler = new MessageScriptCompiler(
-                    AtlusScriptLibrary.MessageScriptLanguage.FormatVersion.Version1BigEndian, userEncoding);
+                    AtlusScriptLibrary.MessageScriptLanguage.FormatVersion.Version1BigEndian, AtlusEncoding.GetByName(comboBox_Encoding.SelectedItem.ToString()));
                 messageScriptCompiler.AddListener(new ConsoleLogListener(true, LogLevel.Info | LogLevel.Warning
                     | LogLevel.Error | LogLevel.Fatal));
                 messageScriptCompiler.Library = LibraryLookup.GetLibrary("P5R");
@@ -424,6 +425,25 @@ namespace AtlusMSGEditor
                     "-OutFormat", "V1BE",
                     "-Out", outPath });
             }));
+        }
+
+        public void ExportFlowTxt()
+        {
+            var msgFile = (MsgFile)listBox_Files.SelectedItem;
+            if (!Directory.Exists(formSettings.ExportPath) || msgFile == null)
+                return;
+
+            string flowPath = Path.Combine(formSettings.ExportPath, 
+                ShrineFox.IO.FileSys.GetExtensionlessPath(msgFile.Path).Replace("_unpacked","").Replace(formSettings.DumpOutputPath, "").TrimStart('\\') + ".flow");
+            Directory.CreateDirectory(Path.GetDirectoryName(flowPath));
+
+            string msgPath = flowPath.Replace(".flow",".msg");
+
+            string flowText = txt_Flowscript.Text;
+            if (listBox_Msgs.Items.Count > 0)
+                flowText = $"import(\"{msgPath}\");\n\n" + flowText;
+
+            MessageBox.Show($"The .flow file was saved to:\n\n\"{flowPath}\"", "Exported. flow");
         }
     }
 }

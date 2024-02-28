@@ -93,13 +93,14 @@ namespace AtlusMSGEditor
         private void UpdateFlowControls()
         {
             if (listBox_Files.SelectedItem != null
-                && showDecompiledFLOWToolStripMenuItem.Checked && Directory.Exists(dumpInputPath))
+                && showDecompiledFLOWToolStripMenuItem.Checked && Directory.Exists(formSettings.DumpInputPath))
             {
                 txt_Flowscript.Clear();
                 txt_Flowscript.Enabled = true;
+                btn_ExportScript.Enabled = true;
 
                 MsgFile msgFile = (MsgFile)listBox_Files.SelectedItem;
-                string bfPath = Path.Combine(dumpInputPath, msgFile.Path.Replace(dumpOutPath, "").TrimStart('\\'));
+                string bfPath = Path.Combine(formSettings.DumpInputPath, msgFile.Path.Replace(formSettings.DumpOutputPath, "").TrimStart('\\'));
                 string flowTxt = GetFlowTxt(ShrineFox.IO.FileSys.GetExtensionlessPath(bfPath));
                 if (!string.IsNullOrEmpty(flowTxt))
                     txt_Flowscript.Text = flowTxt;
@@ -108,6 +109,7 @@ namespace AtlusMSGEditor
             {
                 txt_Flowscript.Clear();
                 txt_Flowscript.Enabled = false;
+                btn_ExportScript.Enabled = false;
             }
         }
 
@@ -215,7 +217,7 @@ namespace AtlusMSGEditor
         private void ListBoxDirs_Format(object sender, ListControlConvertEventArgs e)
         {
             var msgDir = (MsgDir)e.ListItem;
-            string dirName = msgDir.Path.Replace(dumpOutPath + "\\", "");
+            string dirName = msgDir.Path.Replace(formSettings.DumpOutputPath + "\\", "");
 
             if (msgDir.MsgFiles.Any(x => x.Messages.Any(y => y.Change != null)))
                 e.Value = $" [*] {dirName}";
@@ -396,6 +398,11 @@ namespace AtlusMSGEditor
             {
                 txt_Search.Select();
             }
+        }
+
+        private void ExportScript_Click(object sender, EventArgs e)
+        {
+            ExportFlowTxt();
         }
     }
 }

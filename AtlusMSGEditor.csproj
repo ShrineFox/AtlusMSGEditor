@@ -81,6 +81,9 @@
     <Compile Include="AutoReplaceForm.Designer.cs">
       <DependentUpon>AutoReplaceForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Classes\FormSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Classes\MainForm.Events.MenuStrip.cs">
       <SubType>Form</SubType>
     </Compile>
