@@ -100,7 +100,7 @@ namespace AtlusMSGEditor
                 btn_ExportScript.Enabled = true;
 
                 MsgFile msgFile = (MsgFile)listBox_Files.SelectedItem;
-                string bfPath = Path.Combine(formSettings.DumpInputPath, msgFile.Path.Replace(formSettings.DumpOutputPath, "").TrimStart('\\'));
+                string bfPath = Path.Combine(formSettings.DumpInputPath, msgFile.Path);
                 string flowTxt = GetFlowTxt(ShrineFox.IO.FileSys.GetExtensionlessPath(bfPath));
                 if (!string.IsNullOrEmpty(flowTxt))
                     txt_Flowscript.Text = flowTxt;
@@ -217,7 +217,7 @@ namespace AtlusMSGEditor
         private void ListBoxDirs_Format(object sender, ListControlConvertEventArgs e)
         {
             var msgDir = (MsgDir)e.ListItem;
-            string dirName = msgDir.Path.Replace(formSettings.DumpOutputPath + "\\", "");
+            string dirName = msgDir.Path;
 
             if (msgDir.MsgFiles.Any(x => x.Messages.Any(y => y.Change != null)))
                 e.Value = $" [*] {dirName}";

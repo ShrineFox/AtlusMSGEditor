@@ -97,7 +97,7 @@ namespace AtlusMSGEditor
             foreach (var file in Directory.GetFiles(directory, $"*{extension}", SearchOption.AllDirectories))
             {
                 File.AppendAllText(txtPath,
-                    $"// {FileSys.GetExtensionlessPath(file.Replace(formSettings.DumpOutputPath, "."))}" +
+                    $"// {FileSys.GetExtensionlessPath(file)}" +
                     $"\n{File.ReadAllText(file)}\n");
             }
         }
@@ -120,10 +120,85 @@ namespace AtlusMSGEditor
         {
             Directory.CreateDirectory(formSettings.ExportPath);
             string outPath = Path.Combine(formSettings.ExportPath, "msgDirs.json");
+
+            //RemoveDuplicateBaseCPKFiles();
+            //RemoveEmptyMsgDirs();
+            //RestoreLineStart();
+            //RemoveNewlineFromSEL();
+
             string jsonText = JsonConvert.SerializeObject(MsgDirs, Newtonsoft.Json.Formatting.Indented);
             File.WriteAllText(outPath, jsonText);
             MessageBox.Show($"Saved Message Dump Json file to:\n{outPath}" +
                 $"\n\nMove it to \"{formSettings.DefaultJSON}\" to load automatically at startup.", "Json Dump Saved");
+        }
+
+        private void RestoreLineStart()
+        {
+            foreach (var dir in MsgDirs)
+                foreach (var file in dir.MsgFiles)
+                    foreach (var msg in file.Messages)
+                    {
+                        var lines = msg.Text.Split(new string[] { "[n]" }, StringSplitOptions.None);
+                        for (int i = 0; i < lines.Length; i++)
+                        {
+                            if (i == 0 || lines[i - 1].EndsWith("[e]"))
+                            {
+                                lines[i] = "[s]" + lines[i];
+                            }
+                        }
+                        msg.Text = string.Join("[n]", lines);
+                    }
+        }
+
+        private void RemoveNewlineFromSEL()
+        {
+            foreach (var dir in MsgDirs)
+                foreach (var file in dir.MsgFiles)
+                    foreach (var msg in file.Messages)
+                        if (msg.IsSelection)
+                            msg.Text = msg.Text.Replace("[n]", "");
+        }
+
+        private void RemoveEmptyMsgDirs()
+        {
+            List<MsgDir> msgDirsToRemove = new List<MsgDir>();
+            foreach (var dir in MsgDirs)
+            {
+                if (dir.MsgFiles.Count <= 0)
+                    msgDirsToRemove.Add(dir);
+            }
+            foreach (var removeDir in msgDirsToRemove)
+            {
+                MsgDirs.Remove(removeDir);
+            }
+        }
+
+        private void RemoveDuplicateBaseCPKFiles()
+        {
+            List<MsgFile> msgFilesToRemove = new List<MsgFile>();
+            foreach (var dir in MsgDirs.Where(x => x.Path.Contains("EN.CPK")))
+            {
+                foreach (var msg in dir.MsgFiles)
+                {
+                    if (MsgDirs.Any(x => x.MsgFiles.Any(y => y.Path == msg.Path.Replace("EN.CPK", "BASE.CPK"))))
+                    {
+                        var msgFileToRemove = MsgDirs.First(x =>
+                            x.MsgFiles.Any(y => y.Path == msg.Path.Replace("EN.CPK", "BASE.CPK")))
+                                .MsgFiles.First(y => y.Path == msg.Path.Replace("EN.CPK", "BASE.CPK"));
+                        msgFilesToRemove.Add(msgFileToRemove);
+                    }
+                }
+            }
+            foreach (var dir in MsgDirs)
+            {
+                foreach (var fileToRemove in msgFilesToRemove)
+                {
+                    if (dir.MsgFiles.Any(x => x.Path == fileToRemove.Path))
+                    {
+                        dir.MsgFiles.Remove(fileToRemove);
+                    }
+                }
+            }
         }
 
         private void ImportBMDs()
@@ -249,12 +324,23 @@ namespace AtlusMSGEditor
             AtlusScriptCompiler.Program.IsActionAssigned = false;
             AtlusScriptCompiler.Program.InputFilePath = inputPath;
             AtlusScriptCompiler.Program.OutputFilePath = outputPath;
-            AtlusScriptCompiler.Program.MessageScriptEncoding = AtlusEncoding.GetByName(comboBox_Encoding.SelectedItem.ToString());
-            AtlusScriptCompiler.Program.MessageScriptTextEncodingName = AtlusEncoding.GetByName(comboBox_Encoding.SelectedItem.ToString()).EncodingName;
-            if (Path.GetExtension(inputPath).ToLower() == ".bmd")
-                AtlusScriptCompiler.Program.InputFileFormat = InputFileFormat.MessageScriptBinary;
-            else if (Path.GetExtension(inputPath).ToLower() == ".bf")
-                AtlusScriptCompiler.Program.InputFileFormat = InputFileFormat.FlowScriptBinary;
+            AtlusScriptCompiler.Program.MessageScriptEncoding = AtlusEncoding.GetByName(formSettings.UserEncoding);
+            AtlusScriptCompiler.Program.MessageScriptTextEncodingName = AtlusEncoding.GetByName(formSettings.UserEncoding).EncodingName;
+            switch (Path.GetExtension(inputPath).ToLower())
+            {
+                case ".bmd":
+                    AtlusScriptCompiler.Program.InputFileFormat = InputFileFormat.MessageScriptBinary;
+                    break;
+                case ".bf":
+                    AtlusScriptCompiler.Program.InputFileFormat = InputFileFormat.FlowScriptBinary;
+                    break;
+                case ".flow":
+                    AtlusScriptCompiler.Program.InputFileFormat = InputFileFormat.FlowScriptTextSource;
+                    break;
+                case ".msg":
+                    AtlusScriptCompiler.Program.InputFileFormat = InputFileFormat.MessageScriptTextSource;
+                    break;
+            }
             AtlusScriptCompiler.Program.Logger = new Logger($"{nameof(AtlusScriptCompiler)}_{Path.GetFileNameWithoutExtension(outputPath)}");
             AtlusScriptCompiler.Program.Listener = new FileAndConsoleLogListener(true, LogLevel.Info | LogLevel.Warning | LogLevel.Error | LogLevel.Fatal);
         }
@@ -301,11 +387,11 @@ namespace AtlusMSGEditor
                 File.Delete(msg);
         }
 
-        private void ExportMSGsToPath(string path)
+        private void ExportMSGsToPath(string exportPath)
         {
             for (int i = 0; i < MsgDirs.Count; i++)
             {
-                foreach (var file in MsgDirs[i].MsgFiles.Where(x =>
+                foreach (var msgFile in MsgDirs[i].MsgFiles.Where(x =>
                     x.Messages.Any(y =>
                         y.Change != null ||
                         (exportAutoReplacedFilesToolStripMenuItem.Checked 
@@ -313,7 +399,7 @@ namespace AtlusMSGEditor
                     )))
                 {
                     string msgTxt = "";
-                    foreach (var msg in file.Messages)
+                    foreach (var msg in msgFile.Messages)
                     {
                         string speaker = msg.Speaker;
                         string text = msg.Text;
@@ -336,7 +422,7 @@ namespace AtlusMSGEditor
                         msgTxt += "]\n";
                         msgTxt += ApplyReplacements(text) + "\n\n";
                     }
-                    string outPath = file.Path.Replace(formSettings.DumpOutputPath, path);
+                    string outPath = exportPath + "\\" + msgFile.Path.Substring(msgFile.Path.IndexOf("\\"));
                     Directory.CreateDirectory(Path.GetDirectoryName(outPath));
                     File.WriteAllText(outPath, msgTxt);
                 }
@@ -346,9 +432,9 @@ namespace AtlusMSGEditor
             }
         }
 
-        private void CompileMSGsInPath(string path)
+        private void CompileMSGsInPath(string exportPath)
         {
-            var msgFiles = Directory.GetFiles(path, "*.msg", SearchOption.AllDirectories);
+            var msgFiles = Directory.GetFiles(exportPath, "*.msg", SearchOption.AllDirectories);
 
             for (int i = 0; i < msgFiles.Length; i++)
             {
@@ -370,9 +456,18 @@ namespace AtlusMSGEditor
 
         private void InjectMSGIntoBF(string msgFile, string outBfPath)
         {
-            string dumpBfPath = FileSys.GetExtensionlessPath(msgFile).Replace(formSettings.ExportPath, formSettings.DumpInputPath);
+            string dumpBfENPath = FileSys.GetExtensionlessPath(msgFile).Replace(formSettings.ExportPath, formSettings.DumpInputPath + "\\" + "EN.CPK_unpacked\\");
+            string dumpBfBASEPath = FileSys.GetExtensionlessPath(msgFile).Replace(formSettings.ExportPath, formSettings.DumpInputPath + "\\" + "BASE.CPK_unpacked\\");
 
-            if (!File.Exists(dumpBfPath) || Path.GetExtension(dumpBfPath).ToLower() != ".bf")
+            if (Path.GetExtension(dumpBfENPath).ToLower() != ".bf")
+                return;
+
+            string dumpBfPath = null;
+            if (File.Exists(dumpBfENPath))
+                dumpBfPath = dumpBfENPath;
+            else if (File.Exists(dumpBfBASEPath))
+                dumpBfPath = dumpBfBASEPath;
+            else
                 return;
 
             FlowScript flowScript = FlowScript.FromFile(dumpBfPath, null);
@@ -380,7 +475,7 @@ namespace AtlusMSGEditor
             using (FileStream fileStream = File.OpenRead(msgFile))
             {
                 MessageScriptCompiler messageScriptCompiler = new MessageScriptCompiler(
-                    AtlusScriptLibrary.MessageScriptLanguage.FormatVersion.Version1BigEndian, AtlusEncoding.GetByName(comboBox_Encoding.SelectedItem.ToString()));
+                    AtlusScriptLibrary.MessageScriptLanguage.FormatVersion.Version1BigEndian, AtlusEncoding.GetByName(formSettings.UserEncoding));
                 messageScriptCompiler.AddListener(new ConsoleLogListener(true, LogLevel.Info | LogLevel.Warning
                     | LogLevel.Error | LogLevel.Fatal));
                 messageScriptCompiler.Library = LibraryLookup.GetLibrary("P5R");
@@ -433,8 +528,7 @@ namespace AtlusMSGEditor
             if (!Directory.Exists(formSettings.ExportPath) || msgFile == null)
                 return;
 
-            string flowPath = Path.Combine(formSettings.ExportPath, 
-                ShrineFox.IO.FileSys.GetExtensionlessPath(msgFile.Path).Replace("_unpacked","").Replace(formSettings.DumpOutputPath, "").TrimStart('\\') + ".flow");
+            string flowPath = Path.Combine(formSettings.ExportPath, msgFile.Path.Substring(msgFile.Path.IndexOf("\\"))) + ".flow";
             Directory.CreateDirectory(Path.GetDirectoryName(flowPath));
 
             string msgPath = flowPath.Replace(".flow",".msg");
@@ -443,7 +537,14 @@ namespace AtlusMSGEditor
             if (listBox_Msgs.Items.Count > 0)
                 flowText = $"import(\"{msgPath}\");\n\n" + flowText;
 
-            MessageBox.Show($"The .flow file was saved to:\n\n\"{flowPath}\"", "Exported. flow");
+            File.WriteAllText(flowPath, flowText);
+
+            MessageBoxManager.OK = "OK";
+            MessageBoxManager.Cancel = "Open Folder";
+            MessageBoxManager.Register();
+            DialogResult result = MessageBox.Show($"The .flow file was saved to:\n\n\"{flowPath}\"", "Exported. flow", MessageBoxButtons.OKCancel);
+            if (result == DialogResult.Cancel)
+                Exe.Run("explorer.exe", Path.GetDirectoryName(flowPath), hideWindow: false);
         }
     }
 }

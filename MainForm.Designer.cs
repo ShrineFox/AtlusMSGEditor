@@ -378,7 +378,7 @@ namespace AtlusMSGEditor
             this.comboBox_MsgType.Items.AddRange(new object[] {
             "Dialog",
             "Selection"});
-            this.comboBox_MsgType.Location = new System.Drawing.Point(99, 48);
+            this.comboBox_MsgType.Location = new System.Drawing.Point(99, 46);
             this.comboBox_MsgType.Name = "comboBox_MsgType";
             this.comboBox_MsgType.Size = new System.Drawing.Size(283, 28);
             this.comboBox_MsgType.TabIndex = 14;
@@ -685,56 +685,56 @@ namespace AtlusMSGEditor
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(222, 26);
             this.saveToolStripMenuItem.Text = "Save Project";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.SaveProject_Click);
             // 
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(222, 26);
             this.loadToolStripMenuItem.Text = "Load Project";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.Load_Click);
             // 
             // importToolStripMenuItem
             // 
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(222, 26);
             this.importToolStripMenuItem.Text = "Import .BMDs";
             this.importToolStripMenuItem.Click += new System.EventHandler(this.ImportBMDs_Click);
             // 
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(222, 26);
             this.exportToolStripMenuItem.Text = "Export .BMDs";
             this.exportToolStripMenuItem.Click += new System.EventHandler(this.ExportBMDs_Click);
             // 
             // exportTXTsToolStripMenuItem
             // 
             this.exportTXTsToolStripMenuItem.Name = "exportTXTsToolStripMenuItem";
-            this.exportTXTsToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.exportTXTsToolStripMenuItem.Size = new System.Drawing.Size(222, 26);
             this.exportTXTsToolStripMenuItem.Text = "Create .TXT Dump";
             this.exportTXTsToolStripMenuItem.Click += new System.EventHandler(this.ExportTXTs_Click);
             // 
             // createJSONDumpToolStripMenuItem
             // 
             this.createJSONDumpToolStripMenuItem.Name = "createJSONDumpToolStripMenuItem";
-            this.createJSONDumpToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.createJSONDumpToolStripMenuItem.Size = new System.Drawing.Size(222, 26);
             this.createJSONDumpToolStripMenuItem.Text = "Create .JSON Dump";
             this.createJSONDumpToolStripMenuItem.Click += new System.EventHandler(this.JsonDump_Click);
             // 
             // setInputPathToolStripMenuItem
             // 
             this.setInputPathToolStripMenuItem.Name = "setInputPathToolStripMenuItem";
-            this.setInputPathToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.setInputPathToolStripMenuItem.Size = new System.Drawing.Size(222, 26);
             this.setInputPathToolStripMenuItem.Text = "Set Input Path...";
             this.setInputPathToolStripMenuItem.Click += new System.EventHandler(this.SetInputPath_Click);
             // 
             // setOutputPathToolStripMenuItem
             // 
             this.setOutputPathToolStripMenuItem.Name = "setOutputPathToolStripMenuItem";
-            this.setOutputPathToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.setOutputPathToolStripMenuItem.Size = new System.Drawing.Size(222, 26);
             this.setOutputPathToolStripMenuItem.Text = "Set Output Path...";
             this.setOutputPathToolStripMenuItem.Click += new System.EventHandler(this.SetOutputPath_Click);
             // 
