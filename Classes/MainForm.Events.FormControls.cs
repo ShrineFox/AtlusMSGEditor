@@ -98,6 +98,7 @@ namespace AtlusMSGEditor
                 txt_Flowscript.Clear();
                 txt_Flowscript.Enabled = true;
                 btn_ExportScript.Enabled = true;
+                tabControl_EditorType.SelectedIndex = 0;
 
                 MsgFile msgFile = (MsgFile)listBox_Files.SelectedItem;
                 string bfPath = Path.Combine(formSettings.DumpInputPath, msgFile.Path);
