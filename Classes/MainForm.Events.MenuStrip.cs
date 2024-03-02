@@ -185,9 +185,6 @@ namespace AtlusMSGEditor
             //Theme.SetMenuRenderer(ContextMenuStrip_RightClick);
             //Theme.RecursivelySetColors(ContextMenuStrip_RightClick);
 
-            MessageBoxManager.Cancel = "Open Folder";
-            MessageBoxManager.Register();
-
             this.Text += $" - {Application.ProductVersion}";
         }
 

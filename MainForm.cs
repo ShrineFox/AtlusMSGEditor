@@ -28,6 +28,9 @@ namespace AtlusMSGEditor
 
             // Setup form appearance
             LoadFormSettings();
+            saveFormChanges = true;
+            MessageBoxManager.Cancel = "Open Folder";
+            MessageBoxManager.Register();
 
             ApplyTheme();
             SetLogging();

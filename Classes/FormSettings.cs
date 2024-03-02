@@ -61,7 +61,6 @@ namespace AtlusMSGEditor
                     exportTXTsToolStripMenuItem.Visible = false;
                     deleteExistingDumpDirToolStripMenuItem.Visible = false;
                 }
-                saveFormChanges = true;
             }
         }
 
