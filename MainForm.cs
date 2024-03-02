@@ -103,10 +103,5 @@ namespace AtlusMSGEditor
             public bool IsSelection { get; set; } = false;
             public Change Change { get; set; } = null;
         }
-
-        private void MenuStrip_CheckedChanged(object sender, EventArgs e)
-        {
-            SaveFormSettings();
-        }
     }
 }

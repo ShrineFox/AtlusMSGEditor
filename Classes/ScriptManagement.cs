@@ -20,6 +20,7 @@ using System.Text.RegularExpressions;
 using static AtlusMSGEditor.MainForm;
 using AtlusScriptLibrary.FlowScriptLanguage.Decompiler;
 using AtlusScriptLibrary.Common.Text.Encodings;
+using AtlusScriptLibrary.Common.Collections;
 
 namespace AtlusMSGEditor
 {
@@ -90,8 +91,8 @@ namespace AtlusMSGEditor
 
         private void CombineToTxt(string directory, string extension)
         {
-            string txtPath = Path.Combine(formSettings.ExportPath, extension.Replace(".", "") + "Dump.txt");
-            Directory.CreateDirectory(formSettings.ExportPath);
+            string txtPath = Path.Combine(formSettings.CPKExportPath, extension.Replace(".", "") + "Dump.txt");
+            Directory.CreateDirectory(formSettings.CPKExportPath);
             File.CreateText(txtPath).Close();
 
             foreach (var file in Directory.GetFiles(directory, $"*{extension}", SearchOption.AllDirectories))
@@ -118,18 +119,29 @@ namespace AtlusMSGEditor
 
         private void CreateJSONDump()
         {
-            Directory.CreateDirectory(formSettings.ExportPath);
-            string outPath = Path.Combine(formSettings.ExportPath, "msgDirs.json");
+            Directory.CreateDirectory(formSettings.CPKExportPath);
+            string outPath = Path.Combine(formSettings.CPKExportPath, "msgDirs.json");
 
             //RemoveDuplicateBaseCPKFiles();
             //RemoveEmptyMsgDirs();
             //RestoreLineStart();
             //RemoveNewlineFromSEL();
+            //RemoveExtraNewlines();
 
             string jsonText = JsonConvert.SerializeObject(MsgDirs, Newtonsoft.Json.Formatting.Indented);
             File.WriteAllText(outPath, jsonText);
             MessageBox.Show($"Saved Message Dump Json file to:\n{outPath}" +
                 $"\n\nMove it to \"{formSettings.DefaultJSON}\" to load automatically at startup.", "Json Dump Saved");
+        }
+
+        private void RemoveExtraNewlines()
+        {
+            foreach (var dir in MsgDirs)
+                foreach (var file in dir.MsgFiles)
+                    foreach (var msg in file.Messages)
+                    {
+                        msg.Text = msg.Text.Replace("[e][n][s]", "[e][s]");
+                    }
         }
 
         private void RestoreLineStart()
@@ -347,10 +359,10 @@ namespace AtlusMSGEditor
 
         private void ExportBMDs()
         {
-            if (Directory.Exists(formSettings.ExportPath) && deleteExistingOutputDirToolStripMenuItem.Checked)
+            if (Directory.Exists(formSettings.CPKExportPath) && deleteExistingOutputDirToolStripMenuItem.Checked)
             {
                 if (!WinFormsDialogs.ShowMessageBox("Delete Output folder?",
-                $"The existing \"{formSettings.ExportPath}\" directory and its contents will be deleted." +
+                $"The existing \"{formSettings.CPKExportPath}\" directory and its contents will be deleted." +
                 $"\nAre you sure you want to continue?", MessageBoxButtons.YesNo))
                     return;
 
@@ -358,24 +370,27 @@ namespace AtlusMSGEditor
                     Directory.Delete(formSettings.DumpOutputPath, true);
             }
 
-            Directory.CreateDirectory(formSettings.ExportPath);
+            Directory.CreateDirectory(formSettings.CPKExportPath);
 
-            Output.Log($"Creating new .MSGs in \"{formSettings.ExportPath}\"...");
-            ExportMSGsToPath(formSettings.ExportPath);
+            Output.Log($"Creating new .MSGs in \"{formSettings.CPKExportPath}\"...");
+            ExportMSGsToPath(formSettings.CPKExportPath, exportOnlyEditedMessagesToolStripMenuItem.Checked);
             Output.Log($"Done creating new .MSGs.");
 
-            if (outputBMDToolStripMenuItem.Checked)
+            if (!exportOnlyEditedMessagesToolStripMenuItem.Checked)
             {
-                Output.Log($"Compiling .MSGs to .BMD in \"{formSettings.ExportPath}\"...");
-                CompileMSGsInPath(formSettings.ExportPath);
-                Output.Log($"Done compiling .MSGs to .BMD.");
-            }
+                if (outputBMDToolStripMenuItem.Checked)
+                {
+                    Output.Log($"Compiling .MSGs to .BMD in \"{formSettings.CPKExportPath}\"...");
+                    CompileMSGsInPath(formSettings.CPKExportPath);
+                    Output.Log($"Done compiling .MSGs to .BMD.");
+                }
 
-            if (deleteOutputMSGToolStripMenuItem.Checked)
-            {
-                Output.Log($"Deleting output .MSG files...");
-                DeleteMSGsInPath(formSettings.ExportPath);
-                Output.Log($"Done deleting output .MSG files.");
+                if (deleteOutputMSGToolStripMenuItem.Checked)
+                {
+                    Output.Log($"Deleting output .MSG files...");
+                    DeleteMSGsInPath(formSettings.CPKExportPath);
+                    Output.Log($"Done deleting output .MSG files.");
+                }
             }
 
             Output.Log($"Export complete!", ConsoleColor.Green);
@@ -387,54 +402,81 @@ namespace AtlusMSGEditor
                 File.Delete(msg);
         }
 
-        private void ExportMSGsToPath(string exportPath)
+        private void ExportMSGsToPath(string CPKExportPath, bool changedOnly = false)
         {
             for (int i = 0; i < MsgDirs.Count; i++)
             {
-                foreach (var msgFile in MsgDirs[i].MsgFiles.Where(x =>
-                    x.Messages.Any(y =>
-                        y.Change != null ||
-                        (exportAutoReplacedFilesToolStripMenuItem.Checked 
-                            && (y.Text != ApplyReplacements(y.Text) || y.Speaker != ApplyReplacements(y.Speaker)) )
-                    )))
-                {
-                    string msgTxt = "";
-                    foreach (var msg in msgFile.Messages)
-                    {
-                        string speaker = msg.Speaker;
-                        string text = msg.Text;
-                        if (msg.Change != null)
-                        {
-                            speaker = msg.Change.Speaker;
-                            text = msg.Change.MsgText;
-                        }
-
-                        if (msg.IsSelection)
-                            msgTxt += "[sel ";
-                        else
-                            msgTxt += "[msg ";
-
-                        msgTxt += msg.Name;
-                        if (!string.IsNullOrEmpty(speaker))
-                        {
-                            msgTxt += $" [{ApplyReplacements(speaker)}]";
-                        }
-                        msgTxt += "]\n";
-                        msgTxt += ApplyReplacements(text) + "\n\n";
-                    }
-                    string outPath = exportPath + "\\" + msgFile.Path.Substring(msgFile.Path.IndexOf("\\"));
-                    Directory.CreateDirectory(Path.GetDirectoryName(outPath));
-                    File.WriteAllText(outPath, msgTxt);
-                }
+                ExportChangedMSGFilesInMsgDir(MsgDirs[i], CPKExportPath, changedOnly);
 
                 double dbl = i / MsgDirs.Count;
                 SetProgress(Convert.ToInt32(Math.Round(dbl, 0)));
             }
         }
 
-        private void CompileMSGsInPath(string exportPath)
+        private void ExportChangedMSGFilesInMsgDir(MsgDir msgDir, string CPKExportPath, bool changedOnly)
         {
-            var msgFiles = Directory.GetFiles(exportPath, "*.msg", SearchOption.AllDirectories);
+            foreach (var msgFile in msgDir.MsgFiles.Where(x =>
+                    x.Messages.Any(y =>
+                        y.Change != null ||
+                        (exportAutoReplacedFilesToolStripMenuItem.Checked
+                            && (y.Text != ApplyReplacements(y.Text) || y.Speaker != ApplyReplacements(y.Speaker)))
+                    )))
+            {
+                ExportChangedMSGFile(msgFile, CPKExportPath, changedOnly);
+            }
+        }
+
+        private void ExportChangedMSGFile(MsgFile msgFile, string CPKExportPath, bool changedOnly)
+        {
+            string msgTxt = "";
+            foreach (var msg in msgFile.Messages)
+            {
+                if (!changedOnly || msg.Change != null)
+                {
+                    string speaker = msg.Speaker;
+                    string text = msg.Text;
+                    if (msg.Change != null)
+                    {
+                        speaker = msg.Change.Speaker;
+                        text = msg.Change.MsgText;
+                    }
+
+                    if (msg.IsSelection)
+                        msgTxt += "[sel ";
+                    else
+                        msgTxt += "[msg ";
+
+                    msgTxt += msg.Name;
+                    if (!string.IsNullOrEmpty(speaker))
+                    {
+                        msgTxt += $" [{ApplyReplacements(speaker)}]";
+                    }
+                    msgTxt += "]\n";
+                    msgTxt += ApplyReplacements(text) + "\n\n";
+                }
+            }
+
+            string outPath = CPKExportPath + "\\" + msgFile.Path.Substring(msgFile.Path.IndexOf("\\"));
+
+            if (changedOnly && msgFile.Path.Contains(".BF") && Directory.Exists(formSettings.FEmuExportPath))
+            {
+                outPath = formSettings.FEmuExportPath + "\\" + msgFile.Path.Substring(msgFile.Path.IndexOf("\\"));
+                outPath = FileSys.GetExtensionlessPath(FileSys.GetExtensionlessPath(outPath)) + ".msg";
+                string dummyBfPath = CPKExportPath + "\\" + FileSys.GetExtensionlessPath(msgFile.Path.Substring(msgFile.Path.IndexOf("\\")));
+                if (!File.Exists(dummyBfPath))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(dummyBfPath));
+                    File.WriteAllText(dummyBfPath, "");
+                }
+            }
+
+            Directory.CreateDirectory(Path.GetDirectoryName(outPath));
+            File.WriteAllText(outPath, msgTxt);
+        }
+
+        private void CompileMSGsInPath(string CPKExportPath)
+        {
+            var msgFiles = Directory.GetFiles(CPKExportPath, "*.msg", SearchOption.AllDirectories);
 
             for (int i = 0; i < msgFiles.Length; i++)
             {
@@ -456,8 +498,8 @@ namespace AtlusMSGEditor
 
         private void InjectMSGIntoBF(string msgFile, string outBfPath)
         {
-            string dumpBfENPath = FileSys.GetExtensionlessPath(msgFile).Replace(formSettings.ExportPath, formSettings.DumpInputPath + "\\" + "EN.CPK_unpacked\\");
-            string dumpBfBASEPath = FileSys.GetExtensionlessPath(msgFile).Replace(formSettings.ExportPath, formSettings.DumpInputPath + "\\" + "BASE.CPK_unpacked\\");
+            string dumpBfENPath = FileSys.GetExtensionlessPath(msgFile).Replace(formSettings.CPKExportPath, formSettings.DumpInputPath + "\\" + "EN.CPK_unpacked\\");
+            string dumpBfBASEPath = FileSys.GetExtensionlessPath(msgFile).Replace(formSettings.CPKExportPath, formSettings.DumpInputPath + "\\" + "BASE.CPK_unpacked\\");
 
             if (Path.GetExtension(dumpBfENPath).ToLower() != ".bf")
                 return;
@@ -484,7 +526,25 @@ namespace AtlusMSGEditor
                     return;
                 flowScript.MessageScript = messageScript;
                 Directory.CreateDirectory(Path.GetDirectoryName(outBfPath));
+                /*var bin = flowScript.ToBinary();
+                if (bin.SectionHeaders.Last().ElementSize == 240)
+                {
+                    bin.SectionHeaders.RemoveLast(bin.SectionHeaders.Last()); // doesn't seem to work
+                }
+                */
                 flowScript.ToFile(outBfPath);
+            }
+        }
+
+        public static void CopyStream(Stream input, Stream output, int bytes)
+        {
+            byte[] buffer = new byte[32768];
+            int read;
+            while (bytes > 0 &&
+                   (read = input.Read(buffer, 0, Math.Min(buffer.Length, bytes))) > 0)
+            {
+                output.Write(buffer, 0, read);
+                bytes -= read;
             }
         }
 
@@ -525,17 +585,30 @@ namespace AtlusMSGEditor
         public void ExportFlowTxt()
         {
             var msgFile = (MsgFile)listBox_Files.SelectedItem;
-            if (!Directory.Exists(formSettings.ExportPath) || msgFile == null)
+            if (!Directory.Exists(formSettings.FEmuExportPath) || msgFile == null)
+            {
+                MessageBox.Show("FEmulator output path was not found!");
                 return;
+            }
 
-            string flowPath = Path.Combine(formSettings.ExportPath, msgFile.Path.Substring(msgFile.Path.IndexOf("\\"))) + ".flow";
+            string flowPath = formSettings.FEmuExportPath + "\\" + FileSys.GetExtensionlessPath(FileSys.GetExtensionlessPath(msgFile.Path.Substring(msgFile.Path.IndexOf("\\")))) + ".flow";
             Directory.CreateDirectory(Path.GetDirectoryName(flowPath));
 
             string msgPath = flowPath.Replace(".flow",".msg");
-
             string flowText = txt_Flowscript.Text;
-            if (listBox_Msgs.Items.Count > 0)
-                flowText = $"import(\"{msgPath}\");\n\n" + flowText;
+
+            /*
+            bool isMsgChanged = listBox_Msgs.Items.Count > 0 && (msgFile.Messages.Any(y => y.Change != null ||
+                (exportAutoReplacedFilesToolStripMenuItem.Checked && (y.Text != ApplyReplacements(y.Text) || y.Speaker != ApplyReplacements(y.Speaker)))));
+
+            if (isMsgChanged)
+            {
+                flowText = $"import(\"{Path.GetFileName(msgPath)}\");\n\n" + flowText;
+            }
+            
+            if (isMsgChanged)
+                ExportChangedMSGFile(msgFile, msgPath, true);
+            */
 
             File.WriteAllText(flowPath, flowText);
 

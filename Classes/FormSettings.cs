@@ -20,7 +20,8 @@ namespace AtlusMSGEditor
             public Style Theme { get; set; } = Style.Dark;
             public string DumpInputPath { get; set; } = "";
             public string DumpOutputPath { get; set; } = ".\\Dump";
-            public string ExportPath { get; set; } = ".\\Output";
+            public string CPKExportPath { get; set; } = ".\\CPKOutput";
+            public string FEmuExportPath { get; set; } = ".\\FEmuOutput";
             public string DefaultJSON { get; set; } = ".\\Dependencies\\msgDirs.json";
             public bool OutputBFandBMD { get; set; } = true;
             public bool DeleteOutputMSG { get; set; } = false;
@@ -28,7 +29,9 @@ namespace AtlusMSGEditor
             public bool DeleteExistingOutputDir { get; set; } = false;
             public bool ShowAutoReplacedFiles { get; set; } = false;
             public bool ExportAutoReplacedFiles { get; set; } = false;
+            public bool ExportOnlyEditedMessages { get; set; } = true;
             public bool ShowDecompiledFLOW { get; set; } = false;
+            public bool AdvancedMode { get; set; } = false;
         }
 
         public void LoadFormSettings()
@@ -47,7 +50,15 @@ namespace AtlusMSGEditor
                 deleteExistingOutputDirToolStripMenuItem.Checked = formSettings.DeleteExistingDumpDir;
                 showAutoReplacedFilesToolStripMenuItem.Checked = formSettings.ShowAutoReplacedFiles;
                 exportAutoReplacedFilesToolStripMenuItem.Checked = formSettings.ShowAutoReplacedFiles;
+                exportOnlyEditedMessagesToolStripMenuItem.Checked = formSettings.ExportOnlyEditedMessages;
                 showDecompiledFLOWToolStripMenuItem.Checked = formSettings.ShowDecompiledFLOW;
+                if (!formSettings.AdvancedMode)
+                {
+                    importToolStripMenuItem.Visible = false;
+                    createJSONDumpToolStripMenuItem.Visible = false;
+                    exportTXTsToolStripMenuItem.Visible = false;
+                    deleteExistingDumpDirToolStripMenuItem.Visible = false;
+                }
                 saveFormChanges = true;
             }
         }
@@ -67,6 +78,7 @@ namespace AtlusMSGEditor
             formSettings.DeleteExistingDumpDir = deleteExistingOutputDirToolStripMenuItem.Checked;
             formSettings.ShowAutoReplacedFiles = showAutoReplacedFilesToolStripMenuItem.Checked;
             formSettings.ShowAutoReplacedFiles = exportAutoReplacedFilesToolStripMenuItem.Checked;
+            formSettings.ExportOnlyEditedMessages = exportOnlyEditedMessagesToolStripMenuItem.Checked;
             formSettings.ShowDecompiledFLOW = showDecompiledFLOWToolStripMenuItem.Checked;
 
             File.WriteAllText(formSettingsPath, JsonConvert.SerializeObject(formSettings, Formatting.Indented));

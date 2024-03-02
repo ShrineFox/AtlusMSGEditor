@@ -113,12 +113,22 @@ namespace AtlusMSGEditor
         }
 
 
-        private void SetOutputPath_Click(object sender, EventArgs e)
+        private void SetCPKOutputPath_Click(object sender, EventArgs e)
         {
-            var path = WinFormsDialogs.SelectFolder("Choose Mod Folder to Export To");
+            var path = WinFormsDialogs.SelectFolder("Choose Mod's CPK Folder to Export To");
             if (!String.IsNullOrEmpty(path))
             {
-                formSettings.ExportPath = path;
+                formSettings.CPKExportPath = path;
+                SaveFormSettings();
+            }
+        }
+
+        private void SetFEmuOutputPath_Click(object sender, EventArgs e)
+        {
+            var path = WinFormsDialogs.SelectFolder("Choose Mod's FEmulator Folder to Export To");
+            if (!String.IsNullOrEmpty(path))
+            {
+                formSettings.FEmuExportPath = path;
                 SaveFormSettings();
             }
         }
@@ -185,6 +195,10 @@ namespace AtlusMSGEditor
         {
             progressBar1.SyncUI(() => { progressBar1.Value = percent; progressBar1.Update(); }, true);
         }
-        
+
+        private void MenuStrip_CheckedChanged(object sender, EventArgs e)
+        {
+            SaveFormSettings();
+        }
     }
 }
