@@ -192,14 +192,17 @@ namespace AtlusMSGEditor
         private void ListBoxMsgs_Format(object sender, ListControlConvertEventArgs e)
         {
             var msg = (Message)e.ListItem;
+            string msgLabel = $"[{msg.Id}] {msg.Name}";
 
             if (msg.Change != null)
-                e.Value = $" [*] {msg.Name}";
-            else if (showAutoReplacedFilesToolStripMenuItem.Checked && 
+                e.Value = $" [*] {msgLabel}";
+            else if (showAutoReplacedFilesToolStripMenuItem.Checked &&
                 (msg.Text != ApplyReplacements(msg.Text) || msg.Speaker != ApplyReplacements(msg.Speaker)))
             {
-                e.Value = $" [A] {msg.Name}";
+                e.Value = $" [A] {msgLabel}";
             }
+            else
+                e.Value = msgLabel;
         }
 
         private void ListBoxFiles_Format(object sender, ListControlConvertEventArgs e)

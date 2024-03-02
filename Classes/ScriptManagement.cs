@@ -562,9 +562,54 @@ namespace AtlusMSGEditor
             if (File.Exists(tempPath))
                 File.Delete(tempPath);
             if (decompiler.TryDecompile(flowScript, tempPath))
-                return File.ReadAllText(tempPath);
+                return UpdateMessageNames(File.ReadAllLines(tempPath));
             else
                 return null;
+        }
+
+        private string UpdateMessageNames(string[] flowLines)
+        {
+            if (!chk_UseMessageName.Checked)
+                return string.Join("\r\n", flowLines);
+
+            MsgFile msgFile = (MsgFile)listBox_Files.SelectedItem;
+            
+            string flowText = "";
+            for (int i = 0; i < flowLines.Length; i++)
+            {
+                if (flowLines[i].Contains("MSG( ")
+                    //|| flowLines[i].Contains("SEL( ")
+                    || flowLines[i].Contains("MSG_MIND( "))
+                {
+                    string FUNC = "";
+                    string extraParameter = "";
+
+                    switch (flowLines[i])
+                    {
+                        case string a when a.Contains("MSG( "): FUNC = "MSG"; break;
+                        case string b when b.Contains("MSG_MIND( "): FUNC = "MSG_MIND"; extraParameter = ", 0"; break;
+                        //case string c when c.Contains("SEL( "): FUNC = "SEL"; break;
+                    }
+
+                    string tryIsolatingMSGId = flowLines[i].Replace("MSG( ", "")
+                        .Replace("MSG_MIND( ", "")
+                        //.Replace("SEL( ", "")
+                        .Replace(" );", "").Replace(", 0", "").Trim();
+                    
+                    if (Int32.TryParse(tryIsolatingMSGId, out int msgId))
+                    {
+                        int spaceCount = flowLines[i].TakeWhile(Char.IsWhiteSpace).Count();
+                        string newLine = $"{FUNC}( {msgFile.Messages.First(x => x.Id.Equals(msgId)).Name}{extraParameter} );\r\n";
+                        flowText += newLine.PadLeft(spaceCount, ' ');
+                    }
+                    else
+                        flowText += flowLines[i] + "\r\n";
+                }
+                else
+                    flowText += flowLines[i] + "\r\n";
+            }
+
+            return flowText;
         }
 
         private void CompileMSGToBMD(string msgFile, string outPath)
@@ -612,9 +657,6 @@ namespace AtlusMSGEditor
 
             File.WriteAllText(flowPath, flowText);
 
-            MessageBoxManager.OK = "OK";
-            MessageBoxManager.Cancel = "Open Folder";
-            MessageBoxManager.Register();
             DialogResult result = MessageBox.Show($"The .flow file was saved to:\n\n\"{flowPath}\"", "Exported. flow", MessageBoxButtons.OKCancel);
             if (result == DialogResult.Cancel)
                 Exe.Run("explorer.exe", Path.GetDirectoryName(flowPath), hideWindow: false);

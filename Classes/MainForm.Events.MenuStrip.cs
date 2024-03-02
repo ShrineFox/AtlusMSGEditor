@@ -184,6 +184,11 @@ namespace AtlusMSGEditor
             Theme.ApplyToForm(this);
             //Theme.SetMenuRenderer(ContextMenuStrip_RightClick);
             //Theme.RecursivelySetColors(ContextMenuStrip_RightClick);
+
+            MessageBoxManager.Cancel = "Open Folder";
+            MessageBoxManager.Register();
+
+            this.Text += $" - {Application.ProductVersion}";
         }
 
         private void Refresh_Click(object sender, EventArgs e)

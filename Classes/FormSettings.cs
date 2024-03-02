@@ -31,6 +31,7 @@ namespace AtlusMSGEditor
             public bool ExportAutoReplacedFiles { get; set; } = false;
             public bool ExportOnlyEditedMessages { get; set; } = true;
             public bool ShowDecompiledFLOW { get; set; } = false;
+            public bool UseMessageNamesinFLOW { get; set; } = true;
             public bool AdvancedMode { get; set; } = false;
         }
 
@@ -52,6 +53,7 @@ namespace AtlusMSGEditor
                 exportAutoReplacedFilesToolStripMenuItem.Checked = formSettings.ShowAutoReplacedFiles;
                 exportOnlyEditedMessagesToolStripMenuItem.Checked = formSettings.ExportOnlyEditedMessages;
                 showDecompiledFLOWToolStripMenuItem.Checked = formSettings.ShowDecompiledFLOW;
+                chk_UseMessageName.Checked = formSettings.UseMessageNamesinFLOW;
                 if (!formSettings.AdvancedMode)
                 {
                     importToolStripMenuItem.Visible = false;
@@ -80,6 +82,7 @@ namespace AtlusMSGEditor
             formSettings.ShowAutoReplacedFiles = exportAutoReplacedFilesToolStripMenuItem.Checked;
             formSettings.ExportOnlyEditedMessages = exportOnlyEditedMessagesToolStripMenuItem.Checked;
             formSettings.ShowDecompiledFLOW = showDecompiledFLOWToolStripMenuItem.Checked;
+            formSettings.UseMessageNamesinFLOW = chk_UseMessageName.Checked;
 
             File.WriteAllText(formSettingsPath, JsonConvert.SerializeObject(formSettings, Formatting.Indented));
         }
