@@ -657,6 +657,16 @@ namespace AtlusMSGEditor
 
             File.WriteAllText(flowPath, flowText);
 
+            if (Directory.Exists(formSettings.CPKExportPath))
+            {
+                string dummyBfPath = formSettings.CPKExportPath + "\\" + FileSys.GetExtensionlessPath(msgFile.Path.Substring(msgFile.Path.IndexOf("\\")));
+                if (!File.Exists(dummyBfPath))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(dummyBfPath));
+                    File.WriteAllText(dummyBfPath, "");
+                }
+            }
+
             DialogResult result = MessageBox.Show($"The .flow file was saved to:\n\n\"{flowPath}\"", "Exported. flow", MessageBoxButtons.OKCancel);
             if (result == DialogResult.Cancel)
                 Exe.Run("explorer.exe", Path.GetDirectoryName(flowPath), hideWindow: false);
