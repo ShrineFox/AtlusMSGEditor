@@ -381,7 +381,7 @@ namespace AtlusMSGEditor
             this.comboBox_MsgType.Items.AddRange(new object[] {
             "Dialog",
             "Selection"});
-            this.comboBox_MsgType.Location = new System.Drawing.Point(99, 48);
+            this.comboBox_MsgType.Location = new System.Drawing.Point(99, 46);
             this.comboBox_MsgType.Name = "comboBox_MsgType";
             this.comboBox_MsgType.Size = new System.Drawing.Size(283, 28);
             this.comboBox_MsgType.TabIndex = 14;

@@ -391,9 +391,19 @@ namespace AtlusMSGEditor
                     DeleteMSGsInPath(formSettings.CPKExportPath);
                     Output.Log($"Done deleting output .MSG files.");
                 }
+                else if (outputBMDToolStripMenuItem.Checked)
+                {
+                    RenameMSGsInPath(formSettings.CPKExportPath);
+                }
             }
 
             Output.Log($"Export complete!", ConsoleColor.Green);
+        }
+
+        private void RenameMSGsInPath(string renameMsgPath)
+        {
+            foreach (var msg in Directory.GetFiles(renameMsgPath, "*.msg", SearchOption.AllDirectories))
+                File.Move(msg, msg.Replace(".bmd",""));
         }
 
         private void DeleteMSGsInPath(string deleteMsgPath)
