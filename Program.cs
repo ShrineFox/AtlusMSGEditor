@@ -16,6 +16,7 @@ namespace AtlusMSGEditor
         static void Main()
         {
             Application.EnableVisualStyles();
+            Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
             Application.SetCompatibleTextRenderingDefault(false);
             SyncUIHelper.Initialize();
             Application.Run(new MainForm());

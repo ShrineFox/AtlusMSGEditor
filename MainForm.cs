@@ -21,6 +21,7 @@ namespace AtlusMSGEditor
         public int selectedDir = 0;
         public int selectedFile = 0;
         public int selectedMsg = 0;
+        Version version = new Version(1, 4, 0, 0);
 
         public MainForm()
         {

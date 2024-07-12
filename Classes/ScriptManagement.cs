@@ -336,8 +336,8 @@ namespace AtlusMSGEditor
             AtlusScriptCompiler.Program.IsActionAssigned = false;
             AtlusScriptCompiler.Program.InputFilePath = inputPath;
             AtlusScriptCompiler.Program.OutputFilePath = outputPath;
-            AtlusScriptCompiler.Program.MessageScriptEncoding = AtlusEncoding.GetByName(formSettings.UserEncoding);
-            AtlusScriptCompiler.Program.MessageScriptTextEncodingName = AtlusEncoding.GetByName(formSettings.UserEncoding).EncodingName;
+            //AtlusScriptCompiler.Program.MessageScriptEncoding = AtlusEncoding.Persona5RoyalEFIGS;
+            //AtlusScriptCompiler.Program.MessageScriptTextEncodingName = AtlusEncoding.Persona5RoyalEFIGS.EncodingName;
             switch (Path.GetExtension(inputPath).ToLower())
             {
                 case ".bmd":
@@ -608,8 +608,13 @@ namespace AtlusMSGEditor
                     
                     if (Int32.TryParse(tryIsolatingMSGId, out int msgId))
                     {
+                        var message = msgFile.Messages.First(x => x.Id.Equals(msgId));
+                        string msgText = $"// MSG#{message.Id} ({message.Speaker}): {message.Text}";
+                        if (message.Change != null)
+                            msgText += $" // EDITED: ({message.Change.Speaker}): {message.Change.MsgText}";
+                        
                         int spaceCount = flowLines[i].TakeWhile(Char.IsWhiteSpace).Count();
-                        string newLine = $"{FUNC}( {msgFile.Messages.First(x => x.Id.Equals(msgId)).Name}{extraParameter} );\r\n";
+                        string newLine = $"{FUNC}( {message.Name}{extraParameter} ); {msgText}\r\n";
                         flowText += newLine.PadLeft(spaceCount, ' ');
                     }
                     else

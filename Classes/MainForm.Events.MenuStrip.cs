@@ -16,6 +16,7 @@ using AtlusScriptLibrary.FlowScriptLanguage;
 using AtlusScriptLibrary.Common.Logging;
 using AtlusScriptLibrary.MessageScriptLanguage.Compiler;
 using System.Threading;
+using System.Reflection;
 
 namespace AtlusMSGEditor
 {
@@ -185,7 +186,7 @@ namespace AtlusMSGEditor
             //Theme.SetMenuRenderer(ContextMenuStrip_RightClick);
             //Theme.RecursivelySetColors(ContextMenuStrip_RightClick);
 
-            this.Text += $" - {Application.ProductVersion}";
+            this.Text += $" - {version}";
         }
 
         private void Refresh_Click(object sender, EventArgs e)
