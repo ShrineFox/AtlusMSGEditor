@@ -26,6 +26,7 @@ namespace AtlusMSGEditor
         public MainForm()
         {
             InitializeComponent();
+            this.Text += $" - {version}";
 
             // Setup form appearance
             LoadFormSettings();

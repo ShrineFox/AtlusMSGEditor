@@ -185,8 +185,6 @@ namespace AtlusMSGEditor
             Theme.ApplyToForm(this);
             //Theme.SetMenuRenderer(ContextMenuStrip_RightClick);
             //Theme.RecursivelySetColors(ContextMenuStrip_RightClick);
-
-            this.Text += $" - {version}";
         }
 
         private void Refresh_Click(object sender, EventArgs e)
