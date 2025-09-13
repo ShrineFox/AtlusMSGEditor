@@ -212,5 +212,10 @@ namespace AtlusMSGEditor
         {
             SaveFormSettings();
         }
+
+        private void CopyLinesInVPOrder_Click(object sender, EventArgs e)
+        {
+            CopyLinesInVPOrder();
+        }
     }
 }

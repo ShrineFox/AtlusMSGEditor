@@ -544,7 +544,7 @@ namespace AtlusMSGEditor
 
             FlowScript flowScript = FlowScript.FromFile(bfPath, null);
             FlowScriptDecompiler decompiler = new FlowScriptDecompiler() 
-                { DecompileMessageScript = false, Library = LibraryLookup.GetLibrary("P5R"), SumBits = true };
+                { DecompileMessageScript = true, Library = LibraryLookup.GetLibrary("P5R"), SumBits = true };
 
             string tempPath = ".\\temp.flow";
             if (File.Exists(tempPath))
@@ -613,6 +613,48 @@ namespace AtlusMSGEditor
             using (FileSys.WaitForFile(msgFile)) { }
             string args = $"\"{msgFile}\" -Compile -Encoding P5R_{comboBox_Encoding.SelectedItem} -OutFormat V1BE -Out \"{outPath}\"";
             Exe.Run(Path.GetFullPath(formSettings.CompilerPath), args, redirectStdOut: true);
+        }
+
+        private void CopyLinesInVPOrder()
+        {
+            try
+            {
+                var msgFile = (MsgFile)listBox_Files.SelectedItem;
+
+                Regex vpRegex = new Regex(@"\[vp(?:\s+\d+){3}\s+(\d+)");
+
+                /*
+                 * List<Message> sorted = msgFile.Messages
+                    .Where(x => vpRegex.IsMatch(x.Text))
+                    .OrderBy(y => int.Parse(vpRegex.Match(y.Text).Groups[1].Value))
+                    .ToList();
+                */
+
+                List<Message> sorted = msgFile.Messages
+                    // split each message.Text into lines and create new Message objects
+                    .SelectMany(m => m.Text.Split(new[] { "[e]" }, StringSplitOptions.RemoveEmptyEntries)
+                                           .Select(line => new Message { Speaker = m.Speaker, Text = line }))
+                    // extract the [vp] ID
+                    .Select(x => new { Msg = x, Match = Regex.Match(x.Text, @"\[vp(?:\s+\d+){3}\s+(\d+)") })
+                    .Where(x => x.Match.Success)
+                    // group by the ID, keep the first per ID
+                    .GroupBy(x => int.Parse(x.Match.Groups[1].Value))
+                    .Select(g => g.First().Msg)
+                    // sort by the numeric ID
+                    .OrderBy(m => int.Parse(Regex.Match(m.Text, @"\[vp(?:\s+\d+){3}\s+(\d+)").Groups[1].Value))
+                    .ToList();
+
+                StringBuilder sb = new StringBuilder();
+                int i = -1;
+                foreach (var message in sorted)
+                {
+                    sb.AppendLine($"{i}\t{message.Speaker}\t{message.Text}");
+                    i++;
+                }
+
+                Clipboard.SetText(sb.ToString());
+            }
+            catch { MessageBox.Show("Failed to order lines by VoicePack ID using Regular Expression."); }
         }
 
         public void ExportFlowTxt()

@@ -84,6 +84,7 @@ namespace AtlusMSGEditor
             setInputPathToolStripMenuItem = new ToolStripMenuItem();
             setOutputPathToolStripMenuItem = new ToolStripMenuItem();
             setFEmulatorOutputPathToolStripMenuItem = new ToolStripMenuItem();
+            setAtlusScriptCompilerPathToolStripMenuItem = new ToolStripMenuItem();
             optionsToolStripMenuItem = new ToolStripMenuItem();
             outputBMDToolStripMenuItem = new ToolStripMenuItem();
             deleteOutputMSGToolStripMenuItem = new ToolStripMenuItem();
@@ -97,7 +98,7 @@ namespace AtlusMSGEditor
             toggleThemeToolStripMenuItem = new ToolStripMenuItem();
             autoReplaceToolStripMenuItem = new ToolStripMenuItem();
             refreshToolStripMenuItem = new ToolStripMenuItem();
-            setAtlusScriptCompilerPathToolStripMenuItem = new ToolStripMenuItem();
+            copyLinesInVoicePackOrderToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)splitContainer_Main).BeginInit();
             splitContainer_Main.Panel1.SuspendLayout();
             splitContainer_Main.Panel2.SuspendLayout();
@@ -687,7 +688,7 @@ namespace AtlusMSGEditor
             // 
             // fileToolStripMenuItem
             // 
-            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { saveToolStripMenuItem, loadToolStripMenuItem, importToolStripMenuItem, exportToolStripMenuItem, exportTXTsToolStripMenuItem, createJSONDumpToolStripMenuItem, setInputPathToolStripMenuItem, setOutputPathToolStripMenuItem, setFEmulatorOutputPathToolStripMenuItem, setAtlusScriptCompilerPathToolStripMenuItem });
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { saveToolStripMenuItem, loadToolStripMenuItem, importToolStripMenuItem, exportToolStripMenuItem, exportTXTsToolStripMenuItem, createJSONDumpToolStripMenuItem, setInputPathToolStripMenuItem, setOutputPathToolStripMenuItem, setFEmulatorOutputPathToolStripMenuItem, setAtlusScriptCompilerPathToolStripMenuItem, copyLinesInVoicePackOrderToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new Size(46, 24);
             fileToolStripMenuItem.Text = "File";
@@ -754,6 +755,13 @@ namespace AtlusMSGEditor
             setFEmulatorOutputPathToolStripMenuItem.Size = new Size(290, 26);
             setFEmulatorOutputPathToolStripMenuItem.Text = "Set FEmulator Output Path...";
             setFEmulatorOutputPathToolStripMenuItem.Click += SetFEmuOutputPath_Click;
+            // 
+            // setAtlusScriptCompilerPathToolStripMenuItem
+            // 
+            setAtlusScriptCompilerPathToolStripMenuItem.Name = "setAtlusScriptCompilerPathToolStripMenuItem";
+            setAtlusScriptCompilerPathToolStripMenuItem.Size = new Size(290, 26);
+            setAtlusScriptCompilerPathToolStripMenuItem.Text = "Set AtlusScriptCompiler Path...";
+            setAtlusScriptCompilerPathToolStripMenuItem.Click += CompilerPath_Click;
             // 
             // optionsToolStripMenuItem
             // 
@@ -862,12 +870,12 @@ namespace AtlusMSGEditor
             refreshToolStripMenuItem.Text = "Refresh";
             refreshToolStripMenuItem.Click += Refresh_Click;
             // 
-            // setAtlusScriptCompilerPathToolStripMenuItem
+            // copyLinesInVoicePackOrderToolStripMenuItem
             // 
-            setAtlusScriptCompilerPathToolStripMenuItem.Name = "setAtlusScriptCompilerPathToolStripMenuItem";
-            setAtlusScriptCompilerPathToolStripMenuItem.Size = new Size(290, 26);
-            setAtlusScriptCompilerPathToolStripMenuItem.Text = "Set AtlusScriptCompiler Path...";
-            setAtlusScriptCompilerPathToolStripMenuItem.Click += CompilerPath_Click;
+            copyLinesInVoicePackOrderToolStripMenuItem.Name = "copyLinesInVoicePackOrderToolStripMenuItem";
+            copyLinesInVoicePackOrderToolStripMenuItem.Size = new Size(290, 26);
+            copyLinesInVoicePackOrderToolStripMenuItem.Text = "Copy Lines in VoicePack order";
+            copyLinesInVoicePackOrderToolStripMenuItem.Click += CopyLinesInVPOrder_Click;
             // 
             // MainForm
             // 
@@ -998,5 +1006,6 @@ namespace AtlusMSGEditor
         private ToolStripMenuItem setFEmulatorOutputPathToolStripMenuItem;
         private MetroSetCheckBox chk_UseMessageName;
         private ToolStripMenuItem setAtlusScriptCompilerPathToolStripMenuItem;
+        private ToolStripMenuItem copyLinesInVoicePackOrderToolStripMenuItem;
     }
 }
