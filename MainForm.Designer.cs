@@ -97,6 +97,7 @@ namespace AtlusMSGEditor
             toggleThemeToolStripMenuItem = new ToolStripMenuItem();
             autoReplaceToolStripMenuItem = new ToolStripMenuItem();
             refreshToolStripMenuItem = new ToolStripMenuItem();
+            setAtlusScriptCompilerPathToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)splitContainer_Main).BeginInit();
             splitContainer_Main.Panel1.SuspendLayout();
             splitContainer_Main.Panel2.SuspendLayout();
@@ -686,7 +687,7 @@ namespace AtlusMSGEditor
             // 
             // fileToolStripMenuItem
             // 
-            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { saveToolStripMenuItem, loadToolStripMenuItem, importToolStripMenuItem, exportToolStripMenuItem, exportTXTsToolStripMenuItem, createJSONDumpToolStripMenuItem, setInputPathToolStripMenuItem, setOutputPathToolStripMenuItem, setFEmulatorOutputPathToolStripMenuItem });
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { saveToolStripMenuItem, loadToolStripMenuItem, importToolStripMenuItem, exportToolStripMenuItem, exportTXTsToolStripMenuItem, createJSONDumpToolStripMenuItem, setInputPathToolStripMenuItem, setOutputPathToolStripMenuItem, setFEmulatorOutputPathToolStripMenuItem, setAtlusScriptCompilerPathToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new Size(46, 24);
             fileToolStripMenuItem.Text = "File";
@@ -694,63 +695,63 @@ namespace AtlusMSGEditor
             // saveToolStripMenuItem
             // 
             saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            saveToolStripMenuItem.Size = new Size(275, 26);
+            saveToolStripMenuItem.Size = new Size(290, 26);
             saveToolStripMenuItem.Text = "Save Project";
             saveToolStripMenuItem.Click += SaveProject_Click;
             // 
             // loadToolStripMenuItem
             // 
             loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            loadToolStripMenuItem.Size = new Size(275, 26);
+            loadToolStripMenuItem.Size = new Size(290, 26);
             loadToolStripMenuItem.Text = "Load Project";
             loadToolStripMenuItem.Click += Load_Click;
             // 
             // importToolStripMenuItem
             // 
             importToolStripMenuItem.Name = "importToolStripMenuItem";
-            importToolStripMenuItem.Size = new Size(275, 26);
+            importToolStripMenuItem.Size = new Size(290, 26);
             importToolStripMenuItem.Text = "Import .BMDs";
             importToolStripMenuItem.Click += ImportBMDs_Click;
             // 
             // exportToolStripMenuItem
             // 
             exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            exportToolStripMenuItem.Size = new Size(275, 26);
+            exportToolStripMenuItem.Size = new Size(290, 26);
             exportToolStripMenuItem.Text = "Export .BMDs";
             exportToolStripMenuItem.Click += ExportBMDs_Click;
             // 
             // exportTXTsToolStripMenuItem
             // 
             exportTXTsToolStripMenuItem.Name = "exportTXTsToolStripMenuItem";
-            exportTXTsToolStripMenuItem.Size = new Size(275, 26);
+            exportTXTsToolStripMenuItem.Size = new Size(290, 26);
             exportTXTsToolStripMenuItem.Text = "Create .TXT Dump";
             exportTXTsToolStripMenuItem.Click += ExportTXTs_Click;
             // 
             // createJSONDumpToolStripMenuItem
             // 
             createJSONDumpToolStripMenuItem.Name = "createJSONDumpToolStripMenuItem";
-            createJSONDumpToolStripMenuItem.Size = new Size(275, 26);
+            createJSONDumpToolStripMenuItem.Size = new Size(290, 26);
             createJSONDumpToolStripMenuItem.Text = "Create .JSON Dump";
             createJSONDumpToolStripMenuItem.Click += JsonDump_Click;
             // 
             // setInputPathToolStripMenuItem
             // 
             setInputPathToolStripMenuItem.Name = "setInputPathToolStripMenuItem";
-            setInputPathToolStripMenuItem.Size = new Size(275, 26);
+            setInputPathToolStripMenuItem.Size = new Size(290, 26);
             setInputPathToolStripMenuItem.Text = "Set Input Path...";
             setInputPathToolStripMenuItem.Click += SetInputPath_Click;
             // 
             // setOutputPathToolStripMenuItem
             // 
             setOutputPathToolStripMenuItem.Name = "setOutputPathToolStripMenuItem";
-            setOutputPathToolStripMenuItem.Size = new Size(275, 26);
+            setOutputPathToolStripMenuItem.Size = new Size(290, 26);
             setOutputPathToolStripMenuItem.Text = "Set CPK Output Path...";
             setOutputPathToolStripMenuItem.Click += SetCPKOutputPath_Click;
             // 
             // setFEmulatorOutputPathToolStripMenuItem
             // 
             setFEmulatorOutputPathToolStripMenuItem.Name = "setFEmulatorOutputPathToolStripMenuItem";
-            setFEmulatorOutputPathToolStripMenuItem.Size = new Size(275, 26);
+            setFEmulatorOutputPathToolStripMenuItem.Size = new Size(290, 26);
             setFEmulatorOutputPathToolStripMenuItem.Text = "Set FEmulator Output Path...";
             setFEmulatorOutputPathToolStripMenuItem.Click += SetFEmuOutputPath_Click;
             // 
@@ -834,7 +835,7 @@ namespace AtlusMSGEditor
             // 
             comboBox_Encoding.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_Encoding.DropDownWidth = 150;
-            comboBox_Encoding.Items.AddRange(new object[] { "P5R_EFIGS", "P5R_JAPANESE", "P5R_CHINESE" });
+            comboBox_Encoding.Items.AddRange(new object[] { "EFIGS", "Japanese" });
             comboBox_Encoding.Name = "comboBox_Encoding";
             comboBox_Encoding.Size = new Size(151, 28);
             comboBox_Encoding.Visible = false;
@@ -860,6 +861,13 @@ namespace AtlusMSGEditor
             refreshToolStripMenuItem.Size = new Size(72, 24);
             refreshToolStripMenuItem.Text = "Refresh";
             refreshToolStripMenuItem.Click += Refresh_Click;
+            // 
+            // setAtlusScriptCompilerPathToolStripMenuItem
+            // 
+            setAtlusScriptCompilerPathToolStripMenuItem.Name = "setAtlusScriptCompilerPathToolStripMenuItem";
+            setAtlusScriptCompilerPathToolStripMenuItem.Size = new Size(290, 26);
+            setAtlusScriptCompilerPathToolStripMenuItem.Text = "Set AtlusScriptCompiler Path...";
+            setAtlusScriptCompilerPathToolStripMenuItem.Click += CompilerPath_Click;
             // 
             // MainForm
             // 
@@ -989,5 +997,6 @@ namespace AtlusMSGEditor
         private ToolStripMenuItem exportOnlyEditedMessagesToolStripMenuItem;
         private ToolStripMenuItem setFEmulatorOutputPathToolStripMenuItem;
         private MetroSetCheckBox chk_UseMessageName;
+        private ToolStripMenuItem setAtlusScriptCompilerPathToolStripMenuItem;
     }
 }

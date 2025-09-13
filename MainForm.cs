@@ -1,5 +1,4 @@
-﻿using AtlusScriptCompiler;
-using AtlusScriptLibrary.Common.Logging;
+﻿using AtlusScriptLibrary.Common.Logging;
 using AtlusScriptLibrary.Common.Text.Encodings;
 using MetroSet_UI.Forms;
 using Newtonsoft.Json;
@@ -21,7 +20,7 @@ namespace AtlusMSGEditor
         public int selectedDir = 0;
         public int selectedFile = 0;
         public int selectedMsg = 0;
-        Version version = new Version(1, 4, 0, 0);
+        Version version = new Version(1, 4, 1, 0);
 
         public MainForm()
         {
@@ -33,6 +32,7 @@ namespace AtlusMSGEditor
             saveFormChanges = true;
             MessageBoxManager.Cancel = "Open Folder";
             MessageBoxManager.Register();
+            formSettings.UserEncoding = "EFIGS";
 
             ApplyTheme();
             SetLogging();

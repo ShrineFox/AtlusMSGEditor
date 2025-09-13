@@ -1,19 +1,16 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtlusMSGEditor", "AtlusMSGEditor.csproj", "{BFE36637-AABC-4024-AA5F-862249C5F7B2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amicitia.IO", "..\Amicitia.IO\src\Amicitia.IO\Amicitia.IO.csproj", "{41CC0B70-6A3A-4873-BDE7-CA451E4D0984}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amicitia.IO", "..\..\tge-was-taken\Amicitia.IO\src\Amicitia.IO\Amicitia.IO.csproj", "{41CC0B70-6A3A-4873-BDE7-CA451E4D0984}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtlusScriptCompiler", "..\Atlus-Script-Tools\Source\AtlusScriptCompiler\AtlusScriptCompiler.csproj", "{58E13E8A-EA32-4627-A798-58E4648D812E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtlusScriptLibrary", "..\Atlus-Script-Tools\Source\AtlusScriptLibrary\AtlusScriptLibrary.csproj", "{62EE486F-AE33-4DBB-AC4C-409A22CB04AD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtlusScriptLibrary", "..\..\tge-was-taken\Atlus-Script-Tools\Source\AtlusScriptLibrary\AtlusScriptLibrary.csproj", "{62EE486F-AE33-4DBB-AC4C-409A22CB04AD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShrineFox.IO", "..\ShrineFox.IO\ShrineFox.IO.csproj", "{7640412A-7372-4925-B20C-0178D8818A8F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtlusFileSystemLibrary", "..\AtlusFileSystemLibrary\Source\AtlusFileSystemLibrary\AtlusFileSystemLibrary.csproj", "{9960B785-6207-44E8-BA42-EC7F6F785344}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtlusFileSystemLibrary", "..\..\tge-was-taken\AtlusFileSystemLibrary\Source\AtlusFileSystemLibrary\AtlusFileSystemLibrary.csproj", "{9960B785-6207-44E8-BA42-EC7F6F785344}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,16 +46,6 @@ Global
 		{41CC0B70-6A3A-4873-BDE7-CA451E4D0984}.Release|x64.Build.0 = Release|Any CPU
 		{41CC0B70-6A3A-4873-BDE7-CA451E4D0984}.Release|x86.ActiveCfg = Release|Any CPU
 		{41CC0B70-6A3A-4873-BDE7-CA451E4D0984}.Release|x86.Build.0 = Release|Any CPU
-		{58E13E8A-EA32-4627-A798-58E4648D812E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{58E13E8A-EA32-4627-A798-58E4648D812E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{58E13E8A-EA32-4627-A798-58E4648D812E}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{58E13E8A-EA32-4627-A798-58E4648D812E}.Debug|x64.Build.0 = Debug|Any CPU
-		{58E13E8A-EA32-4627-A798-58E4648D812E}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{58E13E8A-EA32-4627-A798-58E4648D812E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{58E13E8A-EA32-4627-A798-58E4648D812E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{58E13E8A-EA32-4627-A798-58E4648D812E}.Release|x64.ActiveCfg = Release|Any CPU
-		{58E13E8A-EA32-4627-A798-58E4648D812E}.Release|x64.Build.0 = Release|Any CPU
-		{58E13E8A-EA32-4627-A798-58E4648D812E}.Release|x86.ActiveCfg = Release|Any CPU
 		{62EE486F-AE33-4DBB-AC4C-409A22CB04AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{62EE486F-AE33-4DBB-AC4C-409A22CB04AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62EE486F-AE33-4DBB-AC4C-409A22CB04AD}.Debug|x64.ActiveCfg = Debug|Any CPU

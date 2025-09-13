@@ -18,6 +18,7 @@ namespace AtlusMSGEditor
         {
             public string UserEncoding { get; set; } = "P5R_EFIGS";
             public Style Theme { get; set; } = Style.Dark;
+            public string CompilerPath { get; set; } = ".\\Dependencies\\Atlus-Script-Tools\\AtlusScriptCompiler.exe";
             public string DumpInputPath { get; set; } = "";
             public string DumpOutputPath { get; set; } = ".\\Dump";
             public string CPKExportPath { get; set; } = ".\\CPKOutput";

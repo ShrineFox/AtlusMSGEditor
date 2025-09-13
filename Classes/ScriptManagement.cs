@@ -1,6 +1,5 @@
 ﻿using AtlusFileSystemLibrary.Common.IO;
 using AtlusFileSystemLibrary.FileSystems.PAK;
-using AtlusScriptCompiler;
 using AtlusScriptLibrary.Common.Libraries;
 using AtlusScriptLibrary.Common.Logging;
 using AtlusScriptLibrary.FlowScriptLanguage;
@@ -21,11 +20,22 @@ using static AtlusMSGEditor.MainForm;
 using AtlusScriptLibrary.FlowScriptLanguage.Decompiler;
 using AtlusScriptLibrary.Common.Text.Encodings;
 using AtlusScriptLibrary.Common.Collections;
+using System.Reflection;
 
 namespace AtlusMSGEditor
 {
     public partial class MainForm : MetroSetForm
     {
+        AtlusEncoding userEncoding;
+
+        public AtlusEncoding GetEncoding()
+        {
+            string encodingName = formSettings.UserEncoding;
+            Type atlusEncodingType = typeof(AtlusEncoding);
+            PropertyInfo property = atlusEncodingType.GetProperty(encodingName, BindingFlags.Public | BindingFlags.Static);
+            return (AtlusEncoding)property.GetValue(null);        
+        }
+
         private List<Message> GetMessagesFromDump(string msgPath)
         {
             string[] lines = File.ReadAllText(msgPath)
@@ -308,17 +318,12 @@ namespace AtlusMSGEditor
             string outPath = scriptPath.Replace(formSettings.DumpInputPath, formSettings.DumpOutputPath) + extension;
             Directory.CreateDirectory(Path.GetDirectoryName(outPath));
 
-            InitializeScriptCompiler(scriptPath, outPath);
-
             if (!File.Exists(outPath))
             {
                 try
                 {
-                    AtlusScriptCompiler.Program.Main(new string[] {
-                scriptPath, "-Decompile",
-                "-Library", "P5R",
-                "-Encoding", comboBox_Encoding.SelectedItem.ToString(),
-                "-Out", outPath });
+                    string args = $"\"{scriptPath}\" -Decompile -Library P5R -Encoding P5R_{comboBox_Encoding.SelectedItem} -Out \"{outPath}\"";
+                    Exe.Run(Path.GetFullPath(formSettings.CompilerPath), args, redirectStdOut: true);
                 }
                 catch { File.AppendAllText("dumpErrors.txt", scriptPath + "\n"); }
             }
@@ -329,32 +334,6 @@ namespace AtlusMSGEditor
             foreach (var replacement in UserSettings.Replacements.Where(x => !string.IsNullOrEmpty(x.TextToReplace)))
                 text = Regex.Replace(text, replacement.TextToReplace, replacement.ReplacementText, RegexOptions.CultureInvariant);
             return text;
-        }
-
-        private void InitializeScriptCompiler(string inputPath, string outputPath)
-        {
-            AtlusScriptCompiler.Program.IsActionAssigned = false;
-            AtlusScriptCompiler.Program.InputFilePath = inputPath;
-            AtlusScriptCompiler.Program.OutputFilePath = outputPath;
-            //AtlusScriptCompiler.Program.MessageScriptEncoding = AtlusEncoding.Persona5RoyalEFIGS;
-            //AtlusScriptCompiler.Program.MessageScriptTextEncodingName = AtlusEncoding.Persona5RoyalEFIGS.EncodingName;
-            switch (Path.GetExtension(inputPath).ToLower())
-            {
-                case ".bmd":
-                    AtlusScriptCompiler.Program.InputFileFormat = InputFileFormat.MessageScriptBinary;
-                    break;
-                case ".bf":
-                    AtlusScriptCompiler.Program.InputFileFormat = InputFileFormat.FlowScriptBinary;
-                    break;
-                case ".flow":
-                    AtlusScriptCompiler.Program.InputFileFormat = InputFileFormat.FlowScriptTextSource;
-                    break;
-                case ".msg":
-                    AtlusScriptCompiler.Program.InputFileFormat = InputFileFormat.MessageScriptTextSource;
-                    break;
-            }
-            AtlusScriptCompiler.Program.Logger = new Logger($"{nameof(AtlusScriptCompiler)}_{Path.GetFileNameWithoutExtension(outputPath)}");
-            AtlusScriptCompiler.Program.Listener = new FileAndConsoleLogListener(true, LogLevel.Info | LogLevel.Warning | LogLevel.Error | LogLevel.Fatal);
         }
 
         private void ExportBMDs()
@@ -527,7 +506,7 @@ namespace AtlusMSGEditor
             using (FileStream fileStream = File.OpenRead(msgFile))
             {
                 MessageScriptCompiler messageScriptCompiler = new MessageScriptCompiler(
-                    AtlusScriptLibrary.MessageScriptLanguage.FormatVersion.Version1BigEndian, AtlusEncoding.GetByName(formSettings.UserEncoding));
+                    AtlusScriptLibrary.MessageScriptLanguage.FormatVersion.Version1BigEndian, GetEncoding());
                 messageScriptCompiler.AddListener(new ConsoleLogListener(true, LogLevel.Info | LogLevel.Warning
                     | LogLevel.Error | LogLevel.Fatal));
                 messageScriptCompiler.Library = LibraryLookup.GetLibrary("P5R");
@@ -568,7 +547,6 @@ namespace AtlusMSGEditor
                 { DecompileMessageScript = false, Library = LibraryLookup.GetLibrary("P5R"), SumBits = true };
 
             string tempPath = ".\\temp.flow";
-            InitializeScriptCompiler(bfPath, tempPath);
             if (File.Exists(tempPath))
                 File.Delete(tempPath);
             if (decompiler.TryDecompile(flowScript, tempPath))
@@ -587,24 +565,27 @@ namespace AtlusMSGEditor
             string flowText = "";
             for (int i = 0; i < flowLines.Length; i++)
             {
-                if (flowLines[i].Contains("MSG( ")
-                    //|| flowLines[i].Contains("SEL( ")
-                    || flowLines[i].Contains("MSG_MIND( "))
+                if (flowLines[i].Contains("MSG(")
+                    //|| flowLines[i].Contains("SEL(")
+                    || flowLines[i].Contains("MSG_MIND(")
+                    || flowLines[i].Contains("MSG_DEVIL("))
                 {
                     string FUNC = "";
                     string extraParameter = "";
 
                     switch (flowLines[i])
                     {
-                        case string a when a.Contains("MSG( "): FUNC = "MSG"; break;
-                        case string b when b.Contains("MSG_MIND( "): FUNC = "MSG_MIND"; extraParameter = ", 0"; break;
-                        //case string c when c.Contains("SEL( "): FUNC = "SEL"; break;
+                        case string a when a.Contains("MSG("): FUNC = "MSG"; break;
+                        case string b when b.Contains("MSG_MIND("): FUNC = "MSG_MIND"; extraParameter = ", 0"; break;
+                        case string c when c.Contains("MSG_DEVIL("): FUNC = "MSG_DEVIL"; extraParameter = ", 0"; break;
+                        //case string d when d.Contains("SEL( "): FUNC = "SEL"; break;
                     }
 
-                    string tryIsolatingMSGId = flowLines[i].Replace("MSG( ", "")
-                        .Replace("MSG_MIND( ", "")
+                    string tryIsolatingMSGId = flowLines[i].Replace("MSG(", "")
+                        .Replace("MSG_MIND(", "")
+                        .Replace("MSG_DEVIL(", "")
                         //.Replace("SEL( ", "")
-                        .Replace(" );", "").Replace(", 0", "").Trim();
+                        .Replace(");", "").Replace(", 0", "").Replace(",0", "").Trim();
                     
                     if (Int32.TryParse(tryIsolatingMSGId, out int msgId))
                     {
@@ -629,17 +610,9 @@ namespace AtlusMSGEditor
 
         private void CompileMSGToBMD(string msgFile, string outPath)
         {
-            InitializeScriptCompiler(msgFile, outPath);
-
-            Invoke(new MethodInvoker(() =>
-            {
-                AtlusScriptCompiler.Program.Main(new string[] {
-                    msgFile, "-Compile",
-                    "-Library", "P5R",
-                    "-Encoding", comboBox_Encoding.SelectedItem.ToString(),
-                    "-OutFormat", "V1BE",
-                    "-Out", outPath });
-            }));
+            using (FileSys.WaitForFile(msgFile)) { }
+            string args = $"\"{msgFile}\" -Compile -Encoding P5R_{comboBox_Encoding.SelectedItem} -OutFormat V1BE -Out \"{outPath}\"";
+            Exe.Run(Path.GetFullPath(formSettings.CompilerPath), args, redirectStdOut: true);
         }
 
         public void ExportFlowTxt()

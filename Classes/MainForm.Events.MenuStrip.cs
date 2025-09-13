@@ -17,6 +17,7 @@ using AtlusScriptLibrary.Common.Logging;
 using AtlusScriptLibrary.MessageScriptLanguage.Compiler;
 using System.Threading;
 using System.Reflection;
+using MoreLinq;
 
 namespace AtlusMSGEditor
 {
@@ -130,6 +131,16 @@ namespace AtlusMSGEditor
             if (!String.IsNullOrEmpty(path))
             {
                 formSettings.FEmuExportPath = path;
+                SaveFormSettings();
+            }
+        }
+
+        private void CompilerPath_Click(object sender, EventArgs e)
+        {
+            var path = WinFormsDialogs.SelectFile("Locate AtlusScriptCompiler.exe", false, new string[] { "Executable (.EXE)" });
+            if (path.Count > 0 && !String.IsNullOrEmpty(path[0]))
+            {
+                formSettings.CompilerPath = path[0];
                 SaveFormSettings();
             }
         }
